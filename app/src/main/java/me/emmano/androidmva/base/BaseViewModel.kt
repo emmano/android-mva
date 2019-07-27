@@ -5,10 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
 open class BaseViewModel<S>(initialState: S) : ViewModel() {
 
     private val stateMutableLiveData = MutableLiveData<(S) -> S>()
+    private val bag = CompositeDisposable()
 
     @VisibleForTesting
     val stateLiveData: LiveData<S> = stateMutableLiveData.scan(initialState)
@@ -27,6 +30,13 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
         }
         return result
     }
+
+    override fun onCleared() {
+        bag.clear()
+        super.onCleared()
+    }
+
+    protected fun Disposable.autoDispose() = bag.add(this)
 }
 
 private fun <S> MutableLiveData<(S) -> S>.scan(initialState: S): LiveData<S> {

@@ -1,4 +1,4 @@
-package me.emmano.androidmva.api
+package me.emmano.androidmva.comics.api
 
 import com.marvel.api.ComicDataWrapper
 import io.reactivex.Single
