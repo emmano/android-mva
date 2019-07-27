@@ -21,7 +21,7 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
 
     private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): LiveData<R> {
         val result = MediatorLiveData<R>()
-        result.addSource<T>(this) { value ->
+        result.addSource(this) { value ->
             val mappedValue = mapper(value)
             if (mappedValue != result.value) result.value = mappedValue
         }
