@@ -9,11 +9,14 @@ class ComicRepository(private val marvelService: MarvelService) {
 
     val comics: Single<List<ComicModel>?> by lazy { marvelService.comics().toComicModels() }
 
-
     private fun Single<ComicDataWrapper>.toComicModels(): Single<List<ComicModel>?> = this.map {
         it.data?.results?.map { comic ->
             with(comic) {
-                ComicModel(title.orEmpty(), description.orEmpty(), ("${images?.first()?.path}.${images?.first()?.extension}").replace("http", "https"))
+
+                val image = images?.first()
+                val imageUrl = "${image?.path}.${image?.extension}"
+
+                ComicModel(title.orEmpty(), description.orEmpty(), imageUrl.replace("http", "https"))
             }
         }
     }

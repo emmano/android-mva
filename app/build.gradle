@@ -23,6 +23,9 @@ android {
         }
     }
 
+    testOptions.unitTests.includeAndroidResources = true
+
+
     dataBinding {
         enabled = true
     }
@@ -89,6 +92,8 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
     testImplementation 'org.robolectric:robolectric:4.2'
     testImplementation 'androidx.test:core:1.2.0'
+    debugImplementation 'androidx.fragment:fragment-testing:1.2.0-alpha01'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.14.2'
     testImplementation 'org.koin:koin-test:2.0.1'
 

@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import me.emmano.androidmva.databinding.FragmentComicsBinding
-import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class ComicsFragment : Fragment() {
 
-    private val viewModel: ComicsViewModel by inject()
+    private val viewModel: ComicsViewModel by viewModel()
     private val adapter = ComicModelAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =

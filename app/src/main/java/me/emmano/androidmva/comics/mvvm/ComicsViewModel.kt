@@ -6,17 +6,18 @@ import me.emmano.androidmva.comics.repo.ComicRepository
 
 class ComicsViewModel(private val comicRepository: ComicRepository) : BaseViewModel<State>(State()) {
 
-    val comics = observe { it.comics }
+    val comics by lazy {  observe { it.comics } }
     val loading = observe { it.loading }
 
     fun loadComics() {
+
         updateState { it.copy(loading = true, showError = false) }
+
         comicRepository.comics.subscribe(
-            {comics -> updateState { it.copy(comics = comics.orEmpty(), loading = false, showError = false) } },
-            { updateState {it.copy( loading = false, showError = true) }  }
+            { comics -> updateState { it.copy(comics = comics.orEmpty(), loading = false, showError = false) } },
+            { updateState { it.copy(loading = false, showError = true) } }
         ).autoDispose()
     }
-
 
     data class State(
         val comics: List<ComicModel> = emptyList(),
