@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Rule
@@ -17,6 +18,16 @@ class BaseViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Test
+    fun `onClear clears bag`() {
+        val testObject = BaseViewModel(TestState())
+        testObject.bag.addAll(mock())
+
+        testObject.onCleared()
+
+        assertThat(testObject.bag.size(), CoreMatchers.equalTo(0))
+    }
 
     @Test
     fun `initial state is broadcasted`() {

@@ -11,7 +11,9 @@ import io.reactivex.disposables.Disposable
 open class BaseViewModel<S>(initialState: S) : ViewModel() {
 
     private val stateMutableLiveData = MutableLiveData<(S) -> S>()
-    private val bag = CompositeDisposable()
+
+    @VisibleForTesting
+    val bag = CompositeDisposable()
 
     @VisibleForTesting
     val stateLiveData: LiveData<S> = stateMutableLiveData.scan(initialState)
@@ -31,7 +33,7 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
         return lazy { result }
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         bag.clear()
         super.onCleared()
     }
