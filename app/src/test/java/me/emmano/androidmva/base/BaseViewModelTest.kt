@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Rule
@@ -17,6 +18,16 @@ class BaseViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Test
+    fun `onClear clears bag`() {
+        val testObject = BaseViewModel(TestState())
+        testObject.bag.addAll(mock())
+
+        testObject.onCleared()
+
+        assertThat(testObject.bag.size(), CoreMatchers.equalTo(0))
+    }
 
     @Test
     fun `initial state is broadcasted`() {
@@ -49,7 +60,6 @@ class BaseViewModelTest {
     @Test(expected = IllegalStateException::class)
     fun `force state immutability`() {
         val initialState = TestState(someString = "stringA", showError = false, loading = false)
-        val observer = mock<Observer<in TestState>>()
         val testObject = BaseViewModel(initialState)
 
         testObject.stateLiveData.observeForever(mock())
@@ -61,7 +71,7 @@ class BaseViewModelTest {
     fun `do not update if value old and new values are the same`() {
         val observer = mock<Observer<in String>>()
         val testObject = TestViewModel()
-        testObject.someString.observeForever(observer)
+        testObject.someString.value.observeForever(observer)
 
         testObject.updateState { it.copy(someString = "stringA") }
 

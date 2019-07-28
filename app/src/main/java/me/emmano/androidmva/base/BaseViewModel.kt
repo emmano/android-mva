@@ -5,10 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
 open class BaseViewModel<S>(initialState: S) : ViewModel() {
 
     private val stateMutableLiveData = MutableLiveData<(S) -> S>()
+
+    @VisibleForTesting
+    val bag = CompositeDisposable()
 
     @VisibleForTesting
     val stateLiveData: LiveData<S> = stateMutableLiveData.scan(initialState)
@@ -17,16 +22,23 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
         stateMutableLiveData.postValue(action)
     }
 
-    fun <T> observe(stateToValue: (S) -> T): LiveData<T> = stateLiveData.mapExclusive(stateToValue)
+    fun <T> observe(stateToValue: (S) -> T): Lazy<LiveData<T>> = stateLiveData.mapExclusive(stateToValue)
 
-    private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): LiveData<R> {
+    private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): Lazy<LiveData<R>> {
         val result = MediatorLiveData<R>()
         result.addSource(this) { value ->
             val mappedValue = mapper(value)
             if (mappedValue != result.value) result.value = mappedValue
         }
-        return result
+        return lazy { result }
     }
+
+    public override fun onCleared() {
+        bag.clear()
+        super.onCleared()
+    }
+
+    protected fun Disposable.autoDispose() = bag.add(this)
 }
 
 private fun <S> MutableLiveData<(S) -> S>.scan(initialState: S): LiveData<S> {
