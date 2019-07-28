@@ -7,6 +7,7 @@ import me.emmano.androidmva.comics.repo.ComicRepository
 class ComicsViewModel(private val comicRepository: ComicRepository) : BaseViewModel<State>(State()) {
 
     val comics = observe { it.comics }
+    val loading = observe { it.loading }
 
     fun loadComics() {
         updateState { it.copy(loading = true, showError = false) }

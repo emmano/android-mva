@@ -13,7 +13,7 @@ class ComicRepository(private val marvelService: MarvelService) {
     private fun Single<ComicDataWrapper>.toComicModels(): Single<List<ComicModel>?> = this.map {
         it.data?.results?.map { comic ->
             with(comic) {
-                ComicModel(title.orEmpty(), description.orEmpty(), images?.first()?.path + images?.first()?.extension)
+                ComicModel(title.orEmpty(), description.orEmpty(), ("${images?.first()?.path}.${images?.first()?.extension}").replace("http", "https"))
             }
         }
     }

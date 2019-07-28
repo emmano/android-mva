@@ -21,7 +21,7 @@ class ComicRepositoryTest {
                     Comic(
                         title = "title",
                         description = "description",
-                        images = listOf(Image("path", "jpg"))
+                        images = listOf(Image("http://path", "jpg"))
                     )
                 )
             }
@@ -33,9 +33,8 @@ class ComicRepositoryTest {
 
         val testObject = ComicRepository(marvelService)
 
-       val testObserver = testObject.comics.test()
+        val testObserver = testObject.comics.test()
 
-        testObserver.assertValue(listOf(ComicModel("title", "description", "pathjpg")))
-
+        testObserver.assertValue(listOf(ComicModel("title", "description", "https://path.jpg")))
     }
 }
