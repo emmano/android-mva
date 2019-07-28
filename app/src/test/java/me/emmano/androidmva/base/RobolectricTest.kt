@@ -1,17 +1,12 @@
 package me.emmano.androidmva.base
 
 import android.os.Build.VERSION_CODES.P
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.KStubbing
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.validateMockitoUsage
-import com.nhaarman.mockitokotlin2.whenever
-import me.emmano.androidmva.comics.mvvm.ComicsViewModel
 import org.junit.After
-import org.junit.Rule
 import org.junit.runner.RunWith
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
@@ -34,7 +29,6 @@ abstract class RobolectricTest : AutoCloseKoinTest() {
     }
 
     protected inline fun <reified V : ViewModel> declareViewModelMock(mock: V = mock(), crossinline stubbing: KStubbing<V>.(V) -> Unit = {KStubbing(mock)}) =
-
          loadKoinModules(module{
              viewModel { KStubbing(mock).stubbing(mock);mock }
          })

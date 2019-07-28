@@ -15,9 +15,7 @@ class ComicsFragmentTest : RobolectricTest() {
 
     @Before
     fun setUp() {
-        declareViewModelMock<ComicsViewModel> {
-            on { comics } doReturn MutableLiveData()
-        }
+        declareViewModelMock<ComicsViewModel> { on { comics } doReturn MutableLiveData() }
 
         launchFragmentInContainer<ComicsFragment>()
     }

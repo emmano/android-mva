@@ -20,15 +20,15 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
         stateMutableLiveData.postValue(action)
     }
 
-    fun <T> observe(stateToValue: (S) -> T): LiveData<T> = stateLiveData.mapExclusive(stateToValue)
+    fun <T> observe(stateToValue: (S) -> T): Lazy<LiveData<T>> = stateLiveData.mapExclusive(stateToValue)
 
-    private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): LiveData<R> {
+    private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): Lazy<LiveData<R>> {
         val result = MediatorLiveData<R>()
         result.addSource(this) { value ->
             val mappedValue = mapper(value)
             if (mappedValue != result.value) result.value = mappedValue
         }
-        return result
+        return lazy { result }
     }
 
     override fun onCleared() {

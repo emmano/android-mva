@@ -49,7 +49,6 @@ class BaseViewModelTest {
     @Test(expected = IllegalStateException::class)
     fun `force state immutability`() {
         val initialState = TestState(someString = "stringA", showError = false, loading = false)
-        val observer = mock<Observer<in TestState>>()
         val testObject = BaseViewModel(initialState)
 
         testObject.stateLiveData.observeForever(mock())
@@ -61,7 +60,7 @@ class BaseViewModelTest {
     fun `do not update if value old and new values are the same`() {
         val observer = mock<Observer<in String>>()
         val testObject = TestViewModel()
-        testObject.someString.observeForever(observer)
+        testObject.someString.value.observeForever(observer)
 
         testObject.updateState { it.copy(someString = "stringA") }
 
