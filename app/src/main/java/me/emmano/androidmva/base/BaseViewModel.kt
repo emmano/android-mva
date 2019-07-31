@@ -18,8 +18,8 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
     @VisibleForTesting
     val stateLiveData: LiveData<S> = stateMutableLiveData.scan(initialState)
 
-    fun updateState(action: (S) -> S) {
-        stateMutableLiveData.postValue(action)
+    fun updateState(reducer: (S) -> S) {
+        stateMutableLiveData.postValue(reducer)
     }
 
     fun <T> observe(stateToValue: (S) -> T): Lazy<LiveData<T>> = stateLiveData.mapExclusive(stateToValue)
@@ -44,9 +44,9 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
 private fun <S> MutableLiveData<(S) -> S>.scan(initialState: S): LiveData<S> {
     val mediatorLiveData: MediatorLiveData<S> = MediatorLiveData()
     mediatorLiveData.value = initialState
-    mediatorLiveData.addSource(this) { action ->
+    mediatorLiveData.addSource(this) { reduce ->
         val oldState = mediatorLiveData.value!!
-        val newState = action(oldState)
+        val newState = reduce(oldState)
         if (oldState === newState) throw IllegalStateException("State should be immutable. Make sure you call copy()")
         mediatorLiveData.postValue(newState)
     }
