@@ -14,12 +14,10 @@ open class BindableViewHolder<B:ViewDataBinding, M>(
 
     open infix fun bind(model: M) {
         binding.setVariable(modelVariableId, model)
-        dsl?.let {
-            dsl.bind?.let{
+            dsl?.bind?.let{
                 it(binding, model)
             }
-            dsl.onClick?.let { dsl -> binding.root.setOnClickListener {dsl(model)} }
-        }
+            dsl?.onClick?.let { dsl -> binding.root.setOnClickListener {dsl(model)} }
 
         binding.executePendingBindings()
     }

@@ -10,7 +10,6 @@ class ComicsViewModel(private val comicRepository: ComicRepository) : BaseViewMo
     val loading by observe { it.loading }
 
     fun loadComics() {
-
         updateState { it.copy(loading = true, showError = false) }
 
         comicRepository.comics.subscribe(
