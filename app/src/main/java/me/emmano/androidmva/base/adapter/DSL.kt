@@ -21,6 +21,12 @@ fun <M : Identity<M>> simpleActionAdapter(
     action: (M)->Unit) : Lazy<ModelAdapter<ViewDataBinding, M>> =
     lazy { object : ModelAdapter<ViewDataBinding, M>(modelId, layoutId, onClick { action(it) }) {}}
 
+fun <M : Identity<M>> actionAdapter(
+    modelId: Int,
+    @LayoutRes layoutId: Int,
+    dsl: ()->DSL<ViewDataBinding,M>) : Lazy<ModelAdapter<ViewDataBinding, M>> =
+    lazy { object : ModelAdapter<ViewDataBinding, M>(modelId, layoutId, onClick { dsl() }) {}}
+
 fun <B: ViewDataBinding, M>bind(block: (B, M)->Unit) =
     DSL(block, null)
 fun <B: ViewDataBinding, M>onClick(block: (M)->Unit) =
