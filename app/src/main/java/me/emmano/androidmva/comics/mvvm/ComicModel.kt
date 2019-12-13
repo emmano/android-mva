@@ -1,3 +1,7 @@
 package me.emmano.androidmva.comics.mvvm
 
-data class ComicModel(val title: String, val description: String, val imageUrl: String)
+import me.emmano.androidmva.base.Identity
+
+data class ComicModel(val title: String, val description: String, val imageUrl: String) : Identity<ComicModel> {
+    override fun isSame(other: ComicModel) = title == other.title
+}
