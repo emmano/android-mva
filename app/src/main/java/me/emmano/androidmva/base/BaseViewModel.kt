@@ -47,7 +47,7 @@ private fun <S> MutableLiveData<(S) -> S>.scan(initialState: S): LiveData<S> {
     mediatorLiveData.addSource(this) { reduce ->
         val oldState = mediatorLiveData.value!!
         val newState = reduce(oldState)
-        if (oldState === newState) throw IllegalStateException("State should be immutable. Make sure you call copy()")
+        check(!(oldState === newState)) { "State should be immutable. Make sure you call copy()" }
         mediatorLiveData.postValue(newState)
     }
     return mediatorLiveData
