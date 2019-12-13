@@ -1,4 +1,4 @@
-package me.emmano.androidmva.base
+package me.emmano.androidmva.base.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -34,6 +34,12 @@ open class BindableViewHolder<B:ViewDataBinding, M>(
             layoutId,
             parent,
             false)
-            .run { BindableViewHolder(this, modelVariableId, dsl) }
+            .run {
+                BindableViewHolder(
+                    this,
+                    modelVariableId,
+                    dsl
+                )
+            }
     }
 }
