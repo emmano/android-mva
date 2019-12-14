@@ -20,16 +20,6 @@ class BaseViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Test
-    fun `onClear clears bag`() {
-        val testObject = BaseViewModel(TestState())
-        testObject.bag.addAll(mock())
-
-        testObject.onCleared()
-
-        assertThat(testObject.bag.size(), CoreMatchers.equalTo(0))
-    }
-
-    @Test
     fun `initial state is broadcasted`() {
         val initialState = mock<TestState>()
         val observer = mock<Observer<in TestState>>()
