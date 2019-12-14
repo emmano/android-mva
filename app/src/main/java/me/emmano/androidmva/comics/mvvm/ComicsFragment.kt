@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.coroutines.launch
 import me.emmano.androidmva.BR
 import me.emmano.androidmva.R
 import me.emmano.androidmva.base.adapter.adapter
@@ -25,13 +27,17 @@ class ComicsFragment : Fragment() {
                comics.adapter = adapter
                comics.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                refresh.setOnRefreshListener {
-                   viewModel.loadComics()
+                   lifecycleScope.launch {
+                       viewModel.loadComics()
+                   }
                }
            }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadComics()
+        lifecycleScope.launch {
+            viewModel.loadComics()
+        }
     }
 
     override fun onResume() {

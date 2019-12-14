@@ -6,15 +6,25 @@ import com.marvel.api.ComicDataWrapper
 import com.marvel.api.Image
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import me.emmano.androidmva.CoroutineTest
 import me.emmano.androidmva.comics.api.MarvelService
 import me.emmano.androidmva.comics.mvvm.ComicModel
+import me.emmano.androidmva.comics.mvvm.LoadingComicsException
+import me.emmano.androidmva.rule.CoroutineTestRule
+import org.hamcrest.core.IsEqual.equalTo
+import org.junit.Assert.assertThat
+import org.junit.Rule
 import org.junit.Test
 
-class ComicRepositoryTest {
+@ExperimentalCoroutinesApi
+class ComicRepositoryTest : CoroutineTest{
+
+    @get:Rule
+    override val coroutineRule = CoroutineTestRule()
 
     @Test
-    fun `comics delegates to marvel service`() {
+    fun `comics delegates to marvel service`() = test{
         val marvelService = mock<MarvelService> {
             val comicDataContainer = mock<ComicDataContainer> {
                 on { results } doReturn listOf(
@@ -28,13 +38,27 @@ class ComicRepositoryTest {
             val comicDataWrapper = mock<ComicDataWrapper> {
                 on { data } doReturn comicDataContainer
             }
-            on { comics() } doReturn Single.just(comicDataWrapper)
+            onBlocking { comics() } doReturn comicDataWrapper
         }
 
         val testObject = ComicRepository(marvelService)
 
-        val testObserver = testObject.comics.test()
+        val comics = testObject.comics()
 
-        testObserver.assertValue(listOf(ComicModel("title", "description", "https://path.jpg")))
+        assertThat(comics, equalTo(listOf(ComicModel("title", "description", "https://path.jpg"))))
+    }
+
+    @Test(expected = LoadingComicsException::class)
+    fun `throw if data is null`() = test {
+        val marvelService = mock<MarvelService> {
+            val comicDataWrapper = mock<ComicDataWrapper> {
+                on { data } doReturn null
+            }
+            onBlocking { comics() } doReturn comicDataWrapper
+        }
+
+        val testObject = ComicRepository(marvelService)
+
+        testObject.comics()
     }
 }
