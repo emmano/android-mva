@@ -10,5 +10,7 @@ import retrofit2.Retrofit
 val comicsModule = module {
     single { get<Retrofit>().create(MarvelService::class.java) }
     single { ComicRepository(get()) }
-    viewModel { ComicsViewModel(get()) }
+    viewModel {
+        ComicsViewModel(ComicsViewModel.ComicsStore(get()))
+    }
 }
