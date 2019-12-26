@@ -3,14 +3,15 @@ package me.emmano.androidmva.base
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel
 import me.emmano.androidmva.comics.repo.ComicRepository
 import timber.log.Timber
+import java.util.concurrent.Executors
 
 open class BaseViewModel2<S>(initialState: S, val store: Store<S>) : ViewModel() {
 
@@ -21,33 +22,31 @@ open class BaseViewModel2<S>(initialState: S, val store: Store<S>) : ViewModel()
             { value, acc ->
                acc.reduce(value)
             }
-            .flowOn(Dispatchers.IO)
             .asLiveData()
-
     }
 
     fun action(action: StoreAction<S>)  {
-         viewModelScope.launch {
+        Timber.e("HAS OBSERVERS: ${stateLiveData.hasActiveObservers()}")
+         viewModelScope.launch(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
              store.dispatch(action)
-
          }
-         }
+    }
 
     fun <T> observe(stateToValue: (S) -> T) = stateLiveData.mapExclusive(stateToValue)
 
-    private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): LiveData<R> {
+    private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): Lazy<LiveData<R>> {
         val result = MediatorLiveData<R>()
         result.addSource(this) { value ->
             val mappedValue = mapper(value)
             if (mappedValue != result.value) result.value = mappedValue
         }
-        return result
+        return lazy{result}
     }
 }
 
 class Store<S> {
 
-    val actions by lazy { ConflatedBroadcastChannel<StoreAction<S>>()}
+    private val actions by lazy { ConflatedBroadcastChannel<StoreAction<S>>()}
     val flow = actions.asFlow()
 
       suspend fun dispatch(action: StoreAction<S>) {

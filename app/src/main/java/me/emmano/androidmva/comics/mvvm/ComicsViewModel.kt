@@ -1,40 +1,30 @@
 package me.emmano.androidmva.comics.mvvm
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import me.emmano.androidmva.base.*
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 import me.emmano.androidmva.comics.repo.ComicRepository
 
-class ComicsViewModel(private val comicRepository: ComicRepository, private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseViewModel2<State>(State(), Store()) {
+class ComicsViewModel(
+    private val comicRepository: ComicRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : BaseViewModel2<State>(State(), Store()) {
 
-    val comics = observe {
+    val comics by observe {
         it.comics
     }
-    val loading = observe {
+    val loading by observe {
         it.loading
     }
 
     fun loadComics() {
+        action(Loading)
+        try {
+            action(LoadComics(comicRepository))
 
-        viewModelScope.launch(Dispatchers.IO) {
-            action(Loading)
-
-        }
-
-            try {
-                viewModelScope.launch(Dispatchers.IO) {
-                    action(LoadComics(comicRepository))
-                }
-
-            } catch (e: LoadingComicsException) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    action(ShowError)
-                }
+        } catch (e: LoadingComicsException) {
+            action(ShowError)
 
         }
     }
