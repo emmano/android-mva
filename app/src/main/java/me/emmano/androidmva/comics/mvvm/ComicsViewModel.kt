@@ -9,7 +9,7 @@ import me.emmano.androidmva.comics.repo.ComicRepository
 class ComicsViewModel(
     private val comicRepository: ComicRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel2<State>(State(), Store()) {
+) : BaseViewModel2<State>(State(), Store(State())) {
 
     val comics by observe {
         it.comics

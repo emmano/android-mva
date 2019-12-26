@@ -32,7 +32,7 @@ class ComicsViewModelTest : CoroutineTest {
         }
         val testObject = ComicsViewModel(comicRepository, this)
 
-        testObject.stateLiveData.observeForever(observer)
+        testObject.asyncStateLiveData.observeForever(observer)
 
         testObject.loadComics()
 
@@ -66,7 +66,7 @@ class ComicsViewModelTest : CoroutineTest {
         pauseDispatcher()
         val testObject = ComicsViewModel(comicRepository, this)
 
-        testObject.stateLiveData.observeForever(observer)
+        testObject.asyncStateLiveData.observeForever(observer)
 
         testObject.loadComics()
 
