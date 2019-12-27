@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -12,7 +13,6 @@ import kotlinx.coroutines.launch
 import me.emmano.androidmva.BR
 import me.emmano.androidmva.R
 import me.emmano.androidmva.base.adapter.adapter
-import me.emmano.androidmva.base.adapter.adapter2
 import me.emmano.androidmva.databinding.ComicCellBinding
 import me.emmano.androidmva.databinding.FragmentComicsBinding
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -20,22 +20,22 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class ComicsFragment : Fragment() {
 
     private val viewModel: ComicsViewModel by viewModel()
-    private val adapter by adapter<ComicModel>(BR.comicModel, R.layout.comic_cell)
-    private val adapterx = adapter2<ComicModel>(BR.comicModel) {
+    private val adapter = adapter<ComicModel> {
         onCreateViewHolder { viewGroup, viewType ->
+
             when(viewType) {
-                1-> holder<ComicCellBinding>(viewGroup, R.layout.comic_cell, BR.comicModel)
-                2-> holder<FragmentComicsBinding>(viewGroup, R.layout.comic_cell, BR.comicModel)
-                3-> holder<ComicCellBinding>(viewGroup, R.layout.comic_cell, BR.comicModel)
+                1-> holder<ComicCellBinding, ComicCell>(viewGroup, R.layout.comic_cell, BR.comicModel) {
+                    onClick {
+                        Toast.makeText(this@ComicsFragment.context, "COOL TEXT", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 else -> throw IllegalStateException()
             }
         }
 
         getViewTypes {
             when(it) {
-                is ComicModelA -> 1
-                is ComicModelB -> 2
-                is ComicModelC -> 3
+                is ComicCell -> 1
             }
         }
     }

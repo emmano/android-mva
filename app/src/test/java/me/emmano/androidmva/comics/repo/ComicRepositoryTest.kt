@@ -9,6 +9,7 @@ import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import me.emmano.androidmva.CoroutineTest
 import me.emmano.androidmva.comics.api.MarvelService
+import me.emmano.androidmva.comics.mvvm.ComicCell
 import me.emmano.androidmva.comics.mvvm.ComicModel
 import me.emmano.androidmva.comics.mvvm.LoadingComicsException
 import me.emmano.androidmva.rule.CoroutineTestRule
@@ -45,7 +46,8 @@ class ComicRepositoryTest : CoroutineTest{
 
         val comics = testObject.comics()
 
-        assertThat(comics, equalTo(listOf(ComicModel("title", "description", "https://path.jpg"))))
+        val comicModels: List<ComicModel> = listOf(ComicCell("title", "description", "https://path.jpg"))
+        assertThat(comics, equalTo(comicModels))
     }
 
     @Test(expected = LoadingComicsException::class)
