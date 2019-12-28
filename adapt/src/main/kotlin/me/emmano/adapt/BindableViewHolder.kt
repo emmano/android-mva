@@ -7,12 +7,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 
-open class BindableViewHolder<B:ViewDataBinding, M : Identity<M>, T : Identity<T>>(
-    open val binding: B,
+class BindableViewHolder<B:ViewDataBinding, M : Identity<M>, T : Identity<T>>(
+    private val binding: B,
     private val modelVariableId: Int,
     private val dsl: ViewHolderDSL<B, T>?) : RecyclerView.ViewHolder(binding.root) {
 
-    open infix fun bind(model: M) {
+     infix fun bind(model: M) {
         binding.setVariable(modelVariableId, model)
 
         dsl?.let { dsl ->

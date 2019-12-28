@@ -4,8 +4,8 @@ import androidx.databinding.ViewDataBinding
 
 class ViewHolderDSL<B: ViewDataBinding, T : Identity<T>> {
 
-    var bind: ((B, T)->Unit)? = null
-    var onClick: ((T)->Unit)? = null
+    internal var bind: ((B, T)->Unit)? = null
+    internal var onClick: ((T)->Unit)? = null
 
     fun onBind(bind: ((B, T)->Unit)?) {
         this.bind = bind

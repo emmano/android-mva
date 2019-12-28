@@ -5,8 +5,8 @@ import androidx.databinding.ViewDataBinding
 
 class AdapterDSL<M : Identity<M>> {
 
-    lateinit var create: (ViewGroup, Int) -> BindableViewHolder<*, M, *>
-    lateinit var viewTypes: (M) -> Int
+    internal lateinit var create: (ViewGroup, Int) -> BindableViewHolder<*, M, *>
+    internal lateinit var viewTypes: (M) -> Int
 
     fun onCreateViewHolder(create: (ViewGroup, Int) -> BindableViewHolder<*, M, *>) {
         this.create = create

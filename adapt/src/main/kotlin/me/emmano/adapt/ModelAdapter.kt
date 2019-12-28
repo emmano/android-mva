@@ -2,13 +2,14 @@ package me.emmano.adapt
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
 class ModelAdapter<M : Identity<M>>(
     private val dsl: AdapterDSL<M>,
-    differ: DiffUtil.ItemCallback<M> = Differ()
-) : ListAdapter<M, BindableViewHolder<*, M, *>>(differ) {
+    builder: AsyncDifferConfig.Builder<M> = AsyncDifferConfig.Builder(Differ())
+) : ListAdapter<M, BindableViewHolder<*, M, *>>(builder.build()) {
 
     private fun model(position: Int): M = getItem(position) as M
 
@@ -26,4 +27,5 @@ class ModelAdapter<M : Identity<M>>(
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(oldItem: M, newItem: M) = oldItem == newItem
     }
+
 }
