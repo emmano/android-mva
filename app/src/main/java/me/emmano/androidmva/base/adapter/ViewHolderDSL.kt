@@ -14,5 +14,4 @@ class ViewHolderDSL<B: ViewDataBinding, T : Identity<T>> {
     fun onClick(onClick: ((T)->Unit)?) {
         this.onClick = onClick
     }
-
 }
