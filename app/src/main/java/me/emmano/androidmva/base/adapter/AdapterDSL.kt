@@ -30,28 +30,40 @@ class AdapterDSL<M : Identity<M>> {
         })
 }
 
-fun <M : Identity<M>> adapter(dsl: AdapterDSL<M>.() -> Unit) =
-    ModelAdapter(AdapterDSL<M>().apply { dsl() })
+fun <M : Identity<M>> adapter(dsl: AdapterDSL<M>.() -> Unit): Lazy<ModelAdapter<M>> =
+    lazy { ModelAdapter(AdapterDSL<M>().apply { dsl() }) }
 
-fun <M : Identity<M>> adapter(modelId: Int, layoutId: Int, onclick: ((M)->Unit)? = null) =
-    ModelAdapter(AdapterDSL<M>()
-        .apply {
-            onCreateViewHolder { parent, _ ->
-                holder<ViewDataBinding, M>(parent, layoutId, modelId) {
-                    onClick(onclick)
+fun <M : Identity<M>> adapter(
+    modelId: Int,
+    layoutId: Int,
+    onclick: ((M) -> Unit)? = null
+): Lazy<ModelAdapter<M>> =
+    lazy {
+        ModelAdapter(AdapterDSL<M>()
+            .apply {
+                onCreateViewHolder { parent, _ ->
+                    holder<ViewDataBinding, M>(parent, layoutId, modelId) {
+                        onClick(onclick)
+                    }
                 }
-            }
-            getViewTypes { 0 }
-        })
+                getViewTypes { 0 }
+            })
+    }
 
-fun <M : Identity<M>, B: ViewDataBinding> adapter(modelId: Int, layoutId: Int, onBind: ((B, M)->Unit)) =
-    ModelAdapter(AdapterDSL<M>()
-        .apply {
-            onCreateViewHolder { parent, _ ->
-                holder<B, M>(parent, layoutId, modelId) {
-                    onBind(onBind)
+fun <M : Identity<M>, B : ViewDataBinding> adapter(
+    modelId: Int,
+    layoutId: Int,
+    onBind: ((B, M) -> Unit)
+): Lazy<ModelAdapter<M>> =
+    lazy {
+        ModelAdapter(AdapterDSL<M>()
+            .apply {
+                onCreateViewHolder { parent, _ ->
+                    holder<B, M>(parent, layoutId, modelId) {
+                        onBind(onBind)
+                    }
                 }
-            }
 
-            getViewTypes { 0 }
-        })
+                getViewTypes { 0 }
+            })
+    }
