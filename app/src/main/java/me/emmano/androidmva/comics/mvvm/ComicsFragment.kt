@@ -42,7 +42,7 @@ class ComicsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.comics.observe(this, Observer {
+        viewModel.comics.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }
