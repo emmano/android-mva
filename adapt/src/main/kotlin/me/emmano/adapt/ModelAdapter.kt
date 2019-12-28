@@ -1,4 +1,4 @@
-package me.emmano.androidmva.base.adapter
+package me.emmano.adapt
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup

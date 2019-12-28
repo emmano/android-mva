@@ -1,4 +1,4 @@
-package me.emmano.androidmva.base.adapter
+package me.emmano.adapt
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -39,7 +39,8 @@ fun <M : Identity<M>> adapter(
     onclick: ((M) -> Unit)? = null
 ): Lazy<ModelAdapter<M>> =
     lazy {
-        ModelAdapter(AdapterDSL<M>()
+        ModelAdapter(
+            AdapterDSL<M>()
             .apply {
                 onCreateViewHolder { parent, _ ->
                     holder<ViewDataBinding, M>(parent, layoutId, modelId) {
@@ -56,7 +57,8 @@ fun <M : Identity<M>, B : ViewDataBinding> adapter(
     onBind: ((B, M) -> Unit)
 ): Lazy<ModelAdapter<M>> =
     lazy {
-        ModelAdapter(AdapterDSL<M>()
+        ModelAdapter(
+            AdapterDSL<M>()
             .apply {
                 onCreateViewHolder { parent, _ ->
                     holder<B, M>(parent, layoutId, modelId) {

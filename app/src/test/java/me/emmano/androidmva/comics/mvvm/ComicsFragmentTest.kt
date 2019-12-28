@@ -1,6 +1,7 @@
 package me.emmano.androidmva.comics.mvvm
 
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -33,19 +34,21 @@ class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
     }
 
     @Test
-    fun `onViewCreated loads and displays comics`() = test {
+    fun `load and display comics`() = test {
         val comicCell = ComicCell("title", "description", "imageUrl")
-        launchFragmentInContainer<ComicsFragment>()
+        val scenario = launchFragmentInContainer<ComicsFragment>()
+        scenario.moveToState(Lifecycle.State.CREATED)
 
         verify(viewModel).loadComics()
 
         comics.value = listOf(comicCell)
+
+        scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(withId(R.id.comics))
             .perform(
                 RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
                 hasDescendant(withText(comicCell.title)),
                 click()))
-
     }
 }

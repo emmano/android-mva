@@ -1,4 +1,4 @@
-package me.emmano.androidmva.base.adapter
+package me.emmano.adapt
 
 import androidx.databinding.ViewDataBinding
 

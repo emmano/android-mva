@@ -1,7 +1,6 @@
 package me.emmano.androidmva.comics.mvvm
 
-import me.emmano.androidmva.base.adapter.Identity
-
+import me.emmano.adapt.Identity
 
 sealed class ComicModel :
     Identity<ComicModel> {
