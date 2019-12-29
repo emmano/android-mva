@@ -16,7 +16,7 @@ class BindableViewHolderTest {
         val binding = mock<ViewDataBinding> {on { root } doReturn rootView }
         val modelVariableId = 1
         val testObject = BindableViewHolder<ViewDataBinding, Model, Model>(binding, modelVariableId, null)
-        val model: TestModel = mock()
+        val model: Content = mock()
 
         testObject bind model
 
@@ -30,7 +30,7 @@ class BindableViewHolderTest {
         val binding = mock<ViewDataBinding> {on { root } doReturn rootView }
         val modelVariableId = 1
         val testObject = BindableViewHolder<ViewDataBinding, Model, Model>(binding, modelVariableId, null)
-        val model: TestModel = mock()
+        val model: Content = mock()
 
         testObject bind model
 
@@ -72,13 +72,13 @@ class BindableViewHolderTest {
     }
 
     @Test
-    fun `binds - dsl bind casts to specific model type`() {
+    fun `bind - dsl bind casts to specific model type`() {
         val rootView: View = mock()
         val binding = mock<ViewDataBinding> {on { root } doReturn rootView }
-        val bindingAction: (ViewDataBinding, TestModel)->Unit = mock()
-        val dsl = mock<ViewHolderDSL<ViewDataBinding, TestModel>>{on { bind } doReturn bindingAction }
-        val testObject = BindableViewHolder<ViewDataBinding, Model, TestModel>(binding, 1, dsl)
-        val model: TestModel = mock()
+        val bindingAction: (ViewDataBinding, Content)->Unit = mock()
+        val dsl = mock<ViewHolderDSL<ViewDataBinding, Content>>{on { bind } doReturn bindingAction }
+        val testObject = BindableViewHolder<ViewDataBinding, Model, Content>(binding, 1, dsl)
+        val model: Content = mock()
 
         testObject bind model as Model
 
@@ -89,10 +89,10 @@ class BindableViewHolderTest {
     fun `bind - dsl onClick casts to specific model type`() {
         val rootView: View = mock()
         val binding = mock<ViewDataBinding> {on { root } doReturn rootView }
-        val clickAction: (TestModel)->Unit = mock()
-        val dsl = mock<ViewHolderDSL<ViewDataBinding, TestModel>>{on { onClick } doReturn clickAction }
-        val testObject = BindableViewHolder<ViewDataBinding, Model, TestModel>(binding, 1, dsl)
-        val model: TestModel = mock()
+        val clickAction: (Content)->Unit = mock()
+        val dsl = mock<ViewHolderDSL<ViewDataBinding, Content>>{on { onClick } doReturn clickAction }
+        val testObject = BindableViewHolder<ViewDataBinding, Model, Content>(binding, 1, dsl)
+        val model: Content = mock()
 
         testObject bind model
 

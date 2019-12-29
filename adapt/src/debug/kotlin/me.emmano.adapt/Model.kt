@@ -4,4 +4,5 @@ sealed class Model : Identity<Model> {
     override fun isSame(other: Model) = false
 }
 
-data class TestModel(val title: String): Model()
+data class Header(val title: String): Model()
+data class Content(val content: String): Model()
