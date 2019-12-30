@@ -169,4 +169,4 @@ class TestFragmentTest: RobolectricTest() {
 
 # How do I add Adapt to my project?
 1. Make sure your project uses Data binding
-2. Add `implement me.emmano:adapt:0.2.0` to your `build.gradle`
+2. Add `implementation me.emmano:adapt:0.2.0` to your `build.gradle`
