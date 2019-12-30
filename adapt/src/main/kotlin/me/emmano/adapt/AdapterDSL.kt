@@ -25,9 +25,7 @@ class AdapterDSL<M : Identity<M>> {
         parent,
         modelId,
         layoutId,
-        ViewHolderDSL<B, T>().apply {
-            dsl?.let { dsl(this) }
-        })
+        ViewHolderDSL<B, T>().apply { dsl?.let { dsl() } })
 }
 
 fun <M : Identity<M>> adapter(dsl: AdapterDSL<M>.() -> Unit): Lazy<ModelAdapter<M>> =
@@ -41,14 +39,14 @@ fun <M : Identity<M>> adapter(
     lazy {
         ModelAdapter(
             AdapterDSL<M>()
-            .apply {
-                onCreateViewHolder { parent, _ ->
-                    holder<ViewDataBinding, M>(parent, layoutId, modelId) {
-                        onClick(onclick)
+                .apply {
+                    onCreateViewHolder { parent, _ ->
+                        holder<ViewDataBinding, M>(parent, layoutId, modelId) {
+                            onClick(onclick)
+                        }
                     }
-                }
-                getViewTypes { 0 }
-            })
+                    getViewTypes { 0 }
+                })
     }
 
 fun <M : Identity<M>, B : ViewDataBinding> adapter(
@@ -59,13 +57,13 @@ fun <M : Identity<M>, B : ViewDataBinding> adapter(
     lazy {
         ModelAdapter(
             AdapterDSL<M>()
-            .apply {
-                onCreateViewHolder { parent, _ ->
-                    holder<B, M>(parent, layoutId, modelId) {
-                        onBind(onBind)
+                .apply {
+                    onCreateViewHolder { parent, _ ->
+                        holder<B, M>(parent, layoutId, modelId) {
+                            onBind(onBind)
+                        }
                     }
-                }
 
-                getViewTypes { 0 }
-            })
+                    getViewTypes { 0 }
+                })
     }

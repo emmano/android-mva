@@ -41,7 +41,7 @@ android {
 
 dependencies {
     implementation project(':marvelapi')
-    implementation project(':adapt')
+    implementation 'me.emmano:adapt:0.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.61"

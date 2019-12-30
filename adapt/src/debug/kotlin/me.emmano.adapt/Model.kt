@@ -1,8 +1,11 @@
 package me.emmano.adapt
 
-sealed class Model : Identity<Model> {
-    override fun isSame(other: Model) = false
+sealed class Model : Identity<Model>
+
+data class Header(val someUniqueId: Int = 0, val title: String): Model() {
+    override fun isSame(other: Model) = someUniqueId == (other as Header).someUniqueId
 }
 
-data class Header(val title: String): Model()
-data class Content(val content: String): Model()
+data class Content(val someUniqueId: Int = 1, val content: String): Model() {
+    override fun isSame(other: Model)=  someUniqueId == (other as Content).someUniqueId
+}
