@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.launch
+import me.emmano.adapt.adapter
 import me.emmano.androidmva.BR
 import me.emmano.androidmva.R
-import me.emmano.androidmva.base.adapter.adapter
 import me.emmano.androidmva.databinding.FragmentComicsBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -42,7 +42,7 @@ class ComicsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.comics.observe(this, Observer {
+        viewModel.comics.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }

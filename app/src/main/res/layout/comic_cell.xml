@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="comicModel" type="me.emmano.androidmva.comics.mvvm.ComicModel"/>
+        <variable name="comicModel" type="me.emmano.androidmva.comics.mvvm.ComicCell"/>
     </data>
 
     <androidx.cardview.widget.CardView

@@ -3,6 +3,7 @@ package me.emmano.androidmva.comics.repo
 import com.marvel.api.ComicDataWrapper
 import me.emmano.androidmva.comics.api.MarvelService
 import me.emmano.androidmva.comics.mvvm.ComicModel
+import me.emmano.androidmva.comics.mvvm.ComicCell
 import me.emmano.androidmva.comics.mvvm.LoadingComicsException
 
 class ComicRepository(private val marvelService: MarvelService) {
@@ -18,7 +19,7 @@ class ComicRepository(private val marvelService: MarvelService) {
             with(comic) {
                 val image = images?.first()
                 val imageUrl = "${image?.path}.${image?.extension}"
-                ComicModel(
+                ComicCell(
                     title.orEmpty(),
                     description.orEmpty(),
                     imageUrl.replace("http", "https")
