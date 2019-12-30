@@ -10,10 +10,6 @@ buildscript {
     }
 }
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -92,6 +88,7 @@ publishing {
                 groupId 'me.emmano'
                 artifactId 'adapt'
                 version VERSION
+                artifact sourcesJar
             }
         }
     }
@@ -121,4 +118,14 @@ bintray {
             vcsTag = VERSION
         }
     }
+}
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
 }
