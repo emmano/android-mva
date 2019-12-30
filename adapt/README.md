@@ -6,7 +6,7 @@ What if told you that creating adapters can be as simple as:
 
 `private val adapter by adapter<ComicModel>(BR.comicModel, R.layout.comic_cell)`
 
-Adapt is a DSL that attempts to standardize RecyclerView.Adapter creation by leveraging Android's
+Adapt is a DSL that attempts to standardize `RecyclerView.Adapter` creation by leveraging Android's
 Data Binding framework.
 
 # How do I use it?
@@ -47,7 +47,7 @@ There is an override for `adapter()` that takes in a lambda that gives access to
 `private val adapter by adapter<ComicCellBinding, ComicModel>(BR.comicModel, R.layout.comic_cell){binding, model-> //do something}`
 
 ## The not so simple case:
-###What if my adapter needs to handle multiple row types?
+### What if my adapter needs to handle multiple row types?
 There is an override for `adapter()` that allows the consumer to define an adapter in a "concise" manner:
 
 
