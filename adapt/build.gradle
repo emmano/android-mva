@@ -1,6 +1,25 @@
+def VERSION = '0.1.0'
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'digital.wup:android-maven-publish:3.6.2'
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'digital.wup.android-maven-publish'
+
 
 android {
     compileSdkVersion 29
@@ -11,7 +30,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName VERSION
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -32,6 +51,7 @@ android {
     dataBinding {
         enabled = true
     }
+
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
@@ -42,6 +62,12 @@ android {
     }
 
     testOptions.unitTests.includeAndroidResources = true
+
+    libraryVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "adapt-${VERSION}.aar"
+        }
+    }
 }
 
 dependencies {
@@ -56,4 +82,43 @@ dependencies {
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'androidx.test:core:1.2.0'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0'
+}
+
+publishing {
+    publications {
+        android.libraryVariants.all { variant ->
+            "maven${variant.name.capitalize()}Aar"(MavenPublication) {
+                from components.findByName("android${variant.name.capitalize()}")
+                groupId 'me.emmano'
+                artifactId 'adapt'
+                version VERSION
+            }
+        }
+    }
+}
+
+bintray {
+    user = 'emmano'
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['mavenReleaseAar']
+
+    dryRun = false
+    publish = false
+    pkg {
+        repo = 'emmano'
+        name = 'me.emmano.adapt'
+        desc = 'DataBinding RecyclerView Adapters made easy'
+        websiteUrl = 'https://github.com/emmano/android-mva/tree/master/adapt'
+        issueTrackerUrl = 'https://github.com/emmano/android-mva/issues'
+        vcsUrl = 'https://github.com/emmano/android-mva.git'
+        licenses = ['Apache-2.0']
+        labels = ['Android', 'DataBinding', 'RecyclerView']
+        publicDownloadNumbers = true
+
+        version {
+            name = VERSION //Bintray logical VERSION name
+            desc = 'DataBinding RecyclerView Adapters made easy'
+            vcsTag = VERSION
+        }
+    }
 }
