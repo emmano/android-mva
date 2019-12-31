@@ -45,7 +45,8 @@ class ComicRepositoryTest : CoroutineTest{
 
         val comics = testObject.comics()
 
-        assertThat(comics, equalTo(listOf(ComicModel("title", "description", "https://path.jpg"))))
+        val comicModels: List<ComicModel> = listOf(ComicModel("title", "description", "https://path.jpg"))
+        assertThat(comics, equalTo(comicModels))
     }
 
     @Test(expected = LoadingComicsException::class)
