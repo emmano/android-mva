@@ -37,18 +37,18 @@ The DSL has several `adapter()`. For the most simple case, an adapter that handl
 
 ### What if I need a click listener added to the whole row?
 
-There is an override for `adapter()` that takes in a lambda that is applied as the click listener for the row:
+There is an overload for `adapter()` that takes in a lambda that is applied as the click listener for the row:
 
 `private val adapter by adapter<ComicModel>(BR.comicModel, R.layout.comic_cell){model-> //do something on click}`
 
 ### What if I need a click listener added to a particular item within the row?
-There is an override for `adapter()` that takes in a lambda that gives access to the `ViewDataBinding` for the row's layout and the model:
+There is an overload for `adapter()` that takes in a lambda that gives access to the `ViewDataBinding` for the row's layout and the model:
 
 `private val adapter by adapter<ComicCellBinding, ComicModel>(BR.comicModel, R.layout.comic_cell){binding, model-> //do something}`
 
 ## The not so simple case:
 ### What if my adapter needs to handle multiple row types?
-There is an override for `adapter()` that allows the consumer to define an adapter in a "concise" manner:
+There is an overload for `adapter()` that allows the consumer to define an adapter in a "concise" manner:
 
 
 ```
