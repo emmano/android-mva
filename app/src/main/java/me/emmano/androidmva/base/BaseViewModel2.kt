@@ -1,22 +1,18 @@
 package me.emmano.androidmva.base
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flattenMerge
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.scan
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel
 import me.emmano.androidmva.comics.repo.ComicRepository
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 open class BaseViewModel2<S>(initialState: S, val store: Store<S>) : ViewModel() {
 
-    val combinedState by lazy {
-        flowOf(store.syncState, store.asyncState).flattenMerge().asLiveData()
-    }
+    val combinedState by lazy { store.combinedState.asLiveData() }
 
 
     fun action(action: StoreAction<S>) {
@@ -42,20 +38,22 @@ open class BaseViewModel2<S>(initialState: S, val store: Store<S>) : ViewModel()
 class Store<S>(private val initialState: S) {
 
     private val asyncActions by lazy { ConflatedBroadcastChannel<AsyncStoreAction<S>>() }
+    private val syncActions by lazy { ConflatedBroadcastChannel<SyncStoreAction<S>>() }
+
     private val state by lazy { ConflatedBroadcastChannel(initialState) }
 
-    val operation: suspend (S, StoreAction<S>) -> S = { value, acc ->
-        val newState = acc.reduce(value)
-        if (value != state.value) {
-            state.send(acc.reduce(state.value))
-        } else {
-            state.send(newState)
-        }
-        state.value
+    val operation: suspend ((S, (S) -> S) -> S) = { acc, value ->  value(acc) }
+
+    private val asyncState = asyncActions.asFlow().flatMapConcat { flow{ emit(it.fire(state.value))} }
+
+    private val syncState = syncActions.asFlow().map {
+        Timber.e("ACTION: $it")
+        it.fire()
     }
 
-    val asyncState = asyncActions.asFlow()
-        .scan(initialState, operation)
+    val combinedState = flowOf(syncState, asyncState).flattenMerge().scan(initialState, operation).map {
+        Timber.e("STATE: $it")
+        state.send(it); it }
 
     suspend fun dispatch(action: StoreAction<S>) {
         Timber.e("DISPATCH($action): Thread ${Thread.currentThread().name}")
@@ -63,50 +61,38 @@ class Store<S>(private val initialState: S) {
             is AsyncStoreAction -> asyncActions.send(action)
             is SyncStoreAction -> syncActions.send(action)
         }
-
     }
 
-    private val syncActions by lazy { ConflatedBroadcastChannel<SyncStoreAction<S>>() }
-
-
-    val syncState = syncActions.asFlow()
-        .scan(initialState, operation)
-
-
 }
 
-interface StoreAction<S> {
-    suspend fun reduce(state: S): S
+interface StoreAction<S>
+
+interface SyncStoreAction<S> : StoreAction<S>{
+     fun fire() : (S) -> S
 }
 
-interface SyncStoreAction<S> : StoreAction<S>
-
-interface AsyncStoreAction<S> : StoreAction<S>
+interface AsyncStoreAction<S> : StoreAction<S> {
+    suspend fun fire(currentState: S) : (S) -> S
+}
 
 object Loading : SyncStoreAction<ComicsViewModel.State> {
+    override fun fire() = {state: ComicsViewModel.State -> state.copy(loading = true, showError = false) }
 
-    override suspend fun reduce(state: ComicsViewModel.State): ComicsViewModel.State {
-        Timber.e("LOADING: Thread ${Thread.currentThread().name}")
-        delay(2000)
-        return state.copy(loading = true, showError = false)
-    }
 }
 
-class LoadComics(private val repository: ComicRepository) :
-    AsyncStoreAction<ComicsViewModel.State> {
+object LoadComics :
+    AsyncStoreAction<ComicsViewModel.State>, KoinComponent {
 
-    override suspend fun reduce(state: ComicsViewModel.State): ComicsViewModel.State {
+    private val comicRepository by inject<ComicRepository>()
 
-        val comics = repository.comics().orEmpty()
-        Timber.e("LOADED COMICS: Thread ${Thread.currentThread().name} $comics")
-        return state.copy(comics = comics, loading = false, showError = false)
+    override suspend fun fire(currentState: ComicsViewModel.State): (ComicsViewModel.State) -> ComicsViewModel.State {
+        val comics = comicRepository.comics().orEmpty()
+        return {state: ComicsViewModel.State -> state.copy(comics, false, false)}
     }
 }
 
 object ShowError : SyncStoreAction<ComicsViewModel.State> {
+    override fun fire() = {state: ComicsViewModel.State -> state.copy(loading = false, showError = true) }
 
-    override suspend fun reduce(state: ComicsViewModel.State): ComicsViewModel.State {
-        return state.copy(loading = false, showError = true)
-    }
 
 }

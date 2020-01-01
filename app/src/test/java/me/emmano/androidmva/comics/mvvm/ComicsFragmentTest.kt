@@ -35,7 +35,7 @@ class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
 
     @Test
     fun `load and display comics`() = test {
-        val comicCell = ComicCell("title", "description", "imageUrl")
+        val comicCell = ComicModel("title", "description", "imageUrl")
         val scenario = launchFragmentInContainer<ComicsFragment>()
         scenario.moveToState(Lifecycle.State.CREATED)
 

@@ -2,19 +2,22 @@ package me.emmano.androidmva.comics.mvvm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import me.emmano.androidmva.CoroutineTest
 import me.emmano.androidmva.comics.repo.ComicRepository
 import me.emmano.androidmva.rule.CoroutineTestRule
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.test.AutoCloseKoinTest
+import org.koin.test.inject
+import org.koin.test.mock.declare
 
 @ExperimentalCoroutinesApi
-class ComicsViewModelTest : CoroutineTest {
+class ComicsViewModelTest : CoroutineTest, AutoCloseKoinTest() {
 
     @get:Rule
     override val coroutineRule: CoroutineTestRule = CoroutineTestRule()
@@ -22,17 +25,32 @@ class ComicsViewModelTest : CoroutineTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val comicsRepository: ComicRepository by inject()
+
+    init {
+        startKoin {}
+    }
+
+    @Before
+    fun setUp() {
+
+        declare { module { single { mock<ComicRepository>() } } }
+    }
+
     @Test
     fun `comics updates state on success`() = test {
         val observer = mock<Observer<ComicsViewModel.State>>()
         val models = mock<List<ComicModel>>()
 
-        val comicRepository = mock<ComicRepository> {
-            onBlocking { comics() } doReturn models
-        }
-        val testObject = ComicsViewModel(comicRepository, this)
+//        val comicRepository = mock<ComicRepository> {
+//            onBlocking { comics() } doReturn models
+//        }
+//
+        whenever(comicsRepository.comics()) doReturn models
 
-        testObject.asyncStateLiveData.observeForever(observer)
+        val testObject = ComicsViewModel()
+
+        testObject.combinedState.observeForever(observer)
 
         testObject.loadComics()
 
@@ -59,14 +77,16 @@ class ComicsViewModelTest : CoroutineTest {
     fun `comics updates state on error`() = test {
         val observer = mock<Observer<ComicsViewModel.State>>()
 
-        val comicRepository = mock<ComicRepository> {
-            onBlocking { comics() } doThrow LoadingComicsException
-        }
+//        val comicRepository = mock<ComicRepository> {
+//            onBlocking { comics() } doThrow LoadingComicsException
+//        }
+
+        whenever(comicsRepository.comics()) doThrow LoadingComicsException
 
         pauseDispatcher()
-        val testObject = ComicsViewModel(comicRepository, this)
+        val testObject = ComicsViewModel()
 
-        testObject.asyncStateLiveData.observeForever(observer)
+        testObject.combinedState.observeForever(observer)
 
         testObject.loadComics()
 

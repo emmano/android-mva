@@ -33,13 +33,6 @@ class ComicsFragment : Fragment() {
                }
            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            viewModel.loadComics()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
