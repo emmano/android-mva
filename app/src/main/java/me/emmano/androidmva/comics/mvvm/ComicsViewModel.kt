@@ -1,9 +1,11 @@
 package me.emmano.androidmva.comics.mvvm
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import me.emmano.androidmva.base.*
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 
-class ComicsViewModel() : BaseViewModel2<State>(State(), Store(State())) {
+class ComicsViewModel(dispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseViewModel2<State>(Store(State(), dispatcher)) {
 
     val comics by observe {
         it.comics
@@ -12,15 +14,15 @@ class ComicsViewModel() : BaseViewModel2<State>(State(), Store(State())) {
         it.loading
     }
 
+
     fun loadComics() {
-        action(Loading)
-        try {
-            action(LoadComics)
 
-        } catch (e: LoadingComicsException) {
-            action(ShowError)
-
+        error {
+            ShowError
         }
+        action(Loading)
+        action(LoadComics())
+
     }
 
     data class State(
