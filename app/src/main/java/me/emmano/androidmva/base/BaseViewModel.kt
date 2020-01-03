@@ -1,10 +1,12 @@
 package me.emmano.androidmva.base
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 
- abstract class BaseViewModel<S>(private val store: Store<S>) : ViewModel(), Errors<S> {
+abstract class BaseViewModel<S>(private val store: Store<S>) : ViewModel(), Errors<S> {
 
+    @VisibleForTesting
     val combinedState by lazy {
         store.error(errors)
         store.combinedState.asLiveData()
