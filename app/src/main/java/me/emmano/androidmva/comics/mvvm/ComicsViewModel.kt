@@ -7,6 +7,10 @@ import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 
 class ComicsViewModel(dispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseViewModel2<State>(Store(State(), dispatcher)) {
 
+    override val errors = { t: Throwable ->
+        ShowError
+    }
+
     val comics by observe {
         it.comics
     }
@@ -14,15 +18,9 @@ class ComicsViewModel(dispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseVi
         it.loading
     }
 
-
     fun loadComics() {
-
-        error {
-            ShowError
-        }
         action(Loading)
         action(LoadComics())
-
     }
 
     data class State(

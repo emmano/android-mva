@@ -13,6 +13,6 @@ interface CoroutineTest {
     val coroutineRule: CoroutineTestRule
 
     fun test(
-        test: suspend TestCoroutineDispatcher.() -> Unit) = coroutineRule.testDispatcher.runBlockingTest { test(coroutineRule.testDispatcher) }
+        test: suspend TestCoroutineDispatcher.() -> Unit) = coroutineRule.testDispatcher.runBlockingTest() { test(coroutineRule.testDispatcher) }
 
 }

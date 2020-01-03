@@ -6,78 +6,106 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
-import org.hamcrest.CoreMatchers
+import kotlinx.coroutines.*
 import org.hamcrest.Matchers.equalTo
-import org.junit.Assert.assertThat
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
-import java.lang.IllegalStateException
+import kotlin.IllegalStateException
 
 
-class BaseViewModelTest {
+class BaseViewModelTest : BaseTest() {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Test
-    fun `initial state is broadcasted`() {
-        val initialState = mock<TestState>()
+    fun `initial state is broadcasted`() = test {
         val observer = mock<Observer<in TestState>>()
-        val testObject = BaseViewModel(initialState)
+        val testObject = TestViewModel(this)
 
-        testObject.stateLiveData.observeForever(observer)
+        testObject.combinedState.observeForever(observer)
 
-        verify(observer).onChanged(initialState)
+        verify(observer).onChanged(TestState())
     }
 
     @Test
-    fun `update state updates state`() {
+    fun `update state updates state`() = test {
         val initialState = TestState(someString = "stringA", showError = false, loading = false)
         val secondState = TestState(someString = "stringB", showError = true, loading = false)
         val thirdState = TestState(someString = "stringC", showError = false, loading = true)
         val observer = mock<Observer<in TestState>>()
-        val testObject = BaseViewModel(initialState)
+        val testObject = object : BaseViewModel2<TestState>(Store(initialState, this)) {
+            override val errors: (Throwable) -> (TestState) -> TestState = {t: Throwable -> {state -> initialState}}
+        }
 
-        testObject.stateLiveData.observeForever(observer)
+        testObject.combinedState.observeForever(observer)
 
-        testObject.updateState {oldState -> oldState.copy(someString = "stringB", showError = true)}
-        assertThat(testObject.stateLiveData.value, equalTo(secondState))
+        testObject.action(ActionB)
 
-        testObject.updateState {oldState -> oldState.copy(someString = "stringC", showError = false, loading = true)}
-        assertThat(testObject.stateLiveData.value, equalTo(thirdState))
+        assertThat(testObject.combinedState.value, equalTo(secondState))
+
+        testObject.action(ActionC)
+
+        assertThat(testObject.combinedState.value, equalTo(thirdState))
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `force state immutability`() {
-        val initialState = TestState(someString = "stringA", showError = false, loading = false)
-        val testObject = BaseViewModel(initialState)
 
-        testObject.stateLiveData.observeForever(mock())
+    @Test
+    fun `force state immutability`() = test {
+        var pass = false
+        Thread.setDefaultUncaughtExceptionHandler { _, exception ->
+            if(exception is IllegalStateException) pass = true
+        }
 
-        testObject.updateState { it }
+        val testObject = TestViewModel(this)
+
+        testObject.combinedState.observeForever(mock())
+
+        testObject.action(ActionD)
+
+        assertThat(pass, equalTo(true))
+
     }
 
     @Test
-    fun `do not update if value old and new values are the same`() {
+    fun `do not update if value old and new values are the same`() = test {
         val observer = mock<Observer<in String>>()
-        val testObject = TestViewModel()
+        val testObject = TestViewModel(this)
+
         testObject.someString.value.observeForever(observer)
+        testObject.action(ActionC)
 
-        testObject.updateState { it.copy(someString = "stringA") }
-
-        verify(observer).onChanged("stringA")
+        verify(observer).onChanged("stringC")
 
         reset(observer)
 
-        testObject.updateState { it.copy(someString = "stringA") }
+        testObject.action(ActionC)
 
-        verify(observer, never()).onChanged("stringA")
+        verify(observer, never()).onChanged("stringC")
     }
 
     private data class TestState(val someString: String = "", val showError: Boolean = false, val loading: Boolean = false)
 
-    private class TestViewModel : BaseViewModel<BaseViewModelTest.TestState>(TestState()) {
+    private object ActionB : SyncStoreAction<TestState> {
+        override fun fire() = {state: TestState -> state.copy(someString = "stringB", loading = false, showError = true) }
 
+    }
+
+    private object ActionC : AsyncStoreAction<TestState> {
+        override suspend fun fire(currentState: TestState) = {state: TestState -> state.copy(someString = "stringC", loading = true, showError = false) }
+
+    }
+
+    private object ActionD : AsyncStoreAction<TestState> {
+        override suspend fun fire(currentState: TestState) = {state: TestState -> state }
+
+    }
+
+    private class TestViewModel(dispatcher: CoroutineDispatcher) : BaseViewModel2<TestState>(Store(TestState(), dispatcher)) {
+        override val errors: (Throwable) -> (TestState) -> TestState = {t: Throwable -> {
+                state -> TestState()
+        }}
         val someString = observe {it.someString}
     }
 }

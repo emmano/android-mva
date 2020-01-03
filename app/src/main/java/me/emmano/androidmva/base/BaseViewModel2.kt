@@ -5,27 +5,21 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel
-import me.emmano.androidmva.comics.mvvm.LoadingComicsException
 import me.emmano.androidmva.comics.repo.ComicRepository
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-open class BaseViewModel2<S>(val store: Store<S>) : ViewModel() {
+ abstract class BaseViewModel2<S>(private val store: Store<S>) : ViewModel(), Errors<S> {
 
-    private lateinit var errorAction: suspend FlowCollector<S>.(cause: Throwable) -> Unit
     val combinedState by lazy {
+        store.error(errors)
         store.combinedState.asLiveData()
     }
-
 
     fun action(action: StoreAction<S>) {
         viewModelScope.launch(store.dispatcher) {
             store.dispatch(action)
         }
-    }
-
-    fun error(action: suspend (cause: Throwable) -> ((S) -> S)) {
-        store.error(action)
     }
 
     fun <T> observe(stateToValue: (S) -> T) = combinedState.mapExclusive(stateToValue)
@@ -40,6 +34,11 @@ open class BaseViewModel2<S>(val store: Store<S>) : ViewModel() {
     }
 }
 
+interface Errors<S> {
+
+    val errors: (Throwable)-> (S)->S
+}
+
 class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher = Dispatchers.IO) {
 
     private val asyncActions by lazy { ConflatedBroadcastChannel<AsyncStoreAction<S>>() }
@@ -47,17 +46,17 @@ class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher 
 
     private val state by lazy { ConflatedBroadcastChannel(initialState) }
 
-    private lateinit var errorAction: suspend (cause: Throwable) -> ((S) -> S)
+    private lateinit var errorAction:  (cause: Throwable) -> ((S) -> S)
 
-
-    val operation: suspend ((S, (S) -> S) -> S) = { acc, value ->
-        value(acc)
+    private val operation: suspend ((S, (S) -> S) -> S) = { acc, value ->
+        val newState = value(acc)
+        check(!(acc === newState)) { "State should be immutable. Make sure you call copy()" }
+        newState
     }
 
-    fun error(action: suspend (cause: Throwable) -> ((S) -> S)) {
+    fun error(action:  (cause: Throwable) -> ((S) -> S)) {
         errorAction = action
     }
-
 
     private val asyncState by lazy {   asyncActions.asFlow()
         .flatMapConcat { flow{ emit(it.fire(state.value))}.catch {
