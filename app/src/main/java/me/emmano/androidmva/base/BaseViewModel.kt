@@ -1,23 +1,22 @@
 package me.emmano.androidmva.base
 
-import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import kotlinx.coroutines.*
 
-open class BaseViewModel<S>(initialState: S) : ViewModel() {
+ abstract class BaseViewModel<S>(private val store: Store<S>) : ViewModel(), Errors<S> {
 
-    private val stateMutableLiveData = MutableLiveData<(S) -> S>()
-
-    @VisibleForTesting
-    val stateLiveData: LiveData<S> = stateMutableLiveData.scan(initialState)
-
-    fun updateState(reducer: (S) -> S) {
-        stateMutableLiveData.postValue(reducer)
+    val combinedState by lazy {
+        store.error(errors)
+        store.combinedState.asLiveData()
     }
 
-    fun <T> observe(stateToValue: (S) -> T): Lazy<LiveData<T>> = stateLiveData.mapExclusive(stateToValue)
+    fun action(action: StoreAction<S>) {
+        viewModelScope.launch(store.dispatcher) {
+            store.dispatch(action)
+        }
+    }
+
+    fun <T> observe(stateToValue: (S) -> T) = combinedState.mapExclusive(stateToValue)
 
     private fun <T, R> LiveData<T>.mapExclusive(mapper: (T) -> R): Lazy<LiveData<R>> {
         val result = MediatorLiveData<R>()
@@ -27,16 +26,4 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
         }
         return lazy { result }
     }
-}
-
-private fun <S> MutableLiveData<(S) -> S>.scan(initialState: S): LiveData<S> {
-    val mediatorLiveData: MediatorLiveData<S> = MediatorLiveData()
-    mediatorLiveData.value = initialState
-    mediatorLiveData.addSource(this) { reduce ->
-        val oldState = mediatorLiveData.value!!
-        val newState = reduce(oldState)
-        check(!(oldState === newState)) { "State should be immutable. Make sure you call copy()" }
-        mediatorLiveData.postValue(newState)
-    }
-    return mediatorLiveData
 }

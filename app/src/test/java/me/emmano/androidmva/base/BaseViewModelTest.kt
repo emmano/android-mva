@@ -35,7 +35,7 @@ class BaseViewModelTest : BaseTest() {
         val secondState = TestState(someString = "stringB", showError = true, loading = false)
         val thirdState = TestState(someString = "stringC", showError = false, loading = true)
         val observer = mock<Observer<in TestState>>()
-        val testObject = object : BaseViewModel2<TestState>(Store(initialState, this)) {
+        val testObject = object : BaseViewModel<TestState>(Store(initialState, this)) {
             override val errors: (Throwable) -> (TestState) -> TestState = {t: Throwable -> {state -> initialState}}
         }
 
@@ -102,7 +102,7 @@ class BaseViewModelTest : BaseTest() {
 
     }
 
-    private class TestViewModel(dispatcher: CoroutineDispatcher) : BaseViewModel2<TestState>(Store(TestState(), dispatcher)) {
+    private class TestViewModel(dispatcher: CoroutineDispatcher) : BaseViewModel<TestState>(Store(TestState(), dispatcher)) {
         override val errors: (Throwable) -> (TestState) -> TestState = {t: Throwable -> {
                 state -> TestState()
         }}
