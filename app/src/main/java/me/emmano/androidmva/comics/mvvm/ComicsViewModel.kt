@@ -5,7 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import me.emmano.androidmva.base.*
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 
-class ComicsViewModel(dispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseViewModel<State>(Store(State(), dispatcher)) {
+class ComicsViewModel(dispatcher: CoroutineDispatcher = Dispatchers.IO) :
+    BaseViewModel<State>(Store(State(), dispatcher)) {
 
     override val errors = { t: Throwable ->
         ShowError

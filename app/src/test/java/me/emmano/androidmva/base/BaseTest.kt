@@ -18,11 +18,11 @@ abstract class BaseTest : AutoCloseKoinTest(), CoroutineTest {
     @get:Rule
     override val coroutineRule: CoroutineTestRule = CoroutineTestRule()
 
-    init { startKoin{} }
+    init { startKoin {} }
 
     @Before
     fun startKoin() {
-        loadKoinModules((module(override = true) { single { mock<ComicRepository>() } } ))
+        loadKoinModules((module { single { mock<ComicRepository>() } }))
     }
 
     @After
