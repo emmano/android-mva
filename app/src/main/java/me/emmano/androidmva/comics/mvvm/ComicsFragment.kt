@@ -35,14 +35,12 @@ class ComicsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            viewModel.loadComics()
-        }
+        viewModel.loadComics()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.comics.observe(viewLifecycleOwner, Observer {
+        viewModel.comics.observe(this, Observer {
             adapter.submitList(it)
         })
     }

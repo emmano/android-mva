@@ -21,7 +21,7 @@ data class ComicDate (
     /* A description of the date (e.g. onsale date, FOC date). */
     val type: kotlin.String? = null,
     /* The date. */
-    val date: java.util.Date? = null
+    val date: String? = null
 ) {
 
 }

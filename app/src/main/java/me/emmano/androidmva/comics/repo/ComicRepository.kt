@@ -16,7 +16,7 @@ class ComicRepository(private val marvelService: MarvelService) {
             if(results == null) throw LoadingComicsException
         results?.map { comic ->
             with(comic) {
-                val image = images?.first()
+                val image = thumbnail
                 val imageUrl = "${image?.path}.${image?.extension}"
                 ComicModel(
                     title.orEmpty(),

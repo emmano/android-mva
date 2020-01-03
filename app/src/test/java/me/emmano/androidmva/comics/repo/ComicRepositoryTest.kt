@@ -31,7 +31,7 @@ class ComicRepositoryTest : CoroutineTest{
                     Comic(
                         title = "title",
                         description = "description",
-                        images = listOf(Image("http://path", "jpg"))
+                        thumbnail = Image("http://path", "jpg")
                     )
                 )
             }

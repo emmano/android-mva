@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface MarvelService {
 
-    @GET("comics?format=comic&formatType=comic&noVariants=true&dateDescriptor=thisMonth&ts=1&apikey=" + BuildConfig.API_KEY)
+    @GET("comics?limit=40&format=comic&formatType=comic&noVariants=true&dateDescriptor=thisMonth&ts=1&apikey=" + BuildConfig.API_KEY)
     suspend fun comics() : ComicDataWrapper
 }
