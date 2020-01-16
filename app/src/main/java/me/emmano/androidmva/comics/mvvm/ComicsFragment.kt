@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 package me.emmano.androidmva.comics.mvvm
 
 import android.os.Bundle
@@ -8,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import me.emmano.adapt.adapter
 import me.emmano.androidmva.BR
