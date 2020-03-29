@@ -4,15 +4,15 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.Statement
 
-class LooperMockTestRunner(private val clazz: Class<*>) : BlockJUnit4ClassRunner(clazz) {
-
+class LooperMockRunner(private val clazz: Class<*>) : BlockJUnit4ClassRunner(clazz) {
+    val instrumentingClassLoader = InstrumentingClassLoader(
+        clazz)
     override fun methodBlock(method: FrameworkMethod): Statement {
         super.methodBlock(method)
 
         return object : Statement() {
             override fun evaluate() {
-                val instrumentingClassLoader = InstrumentingClassLoader(
-                        clazz)
+
 
                 val testClass = instrumentingClassLoader.loadClass(clazz.name)
                 val method = testClass.getMethod(method.method.name)

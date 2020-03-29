@@ -14,8 +14,6 @@ import org.junit.runner.RunWith
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
-@RunWith(LooperMockTestRunner::class)
-@Patch(AsyncListDiffer::class)
 class ModelAdapterTest  {
 
     @Test
@@ -46,11 +44,6 @@ class ModelAdapterTest  {
 
         val testObject = ModelAdapter(adapterDSL)
 
-//        val mObserver = testObject::class.java.superclass!!.superclass!!.declaredFields[0].apply { isAccessible = true }
-
-
-        testObject.registerAdapterDataObserver(mock())
-
         testObject.submitList(listOf(model))
 
         val position = 0
@@ -58,10 +51,6 @@ class ModelAdapterTest  {
         val actualViewType = testObject.getItemViewType(position)
 
         assertThat(actualViewType, equalTo(viewType))
-
-    }
-
-    class Observer : AdapterDataObserver() {
 
     }
 

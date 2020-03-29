@@ -23,7 +23,7 @@ class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() 
 
             return defineClass(name, bytes, 0, bytes.size)
         }
-        val clazzToPatch = testClazz.getAnnotation(Patch::class.java)!!.clazz
+        val clazzToPatch = checkNotNull(testClazz.getAnnotation(Patch::class.java), {"Did you forget to specify @Patch?"}).clazz
         return if(name.contains(this::class.java.`package`!!.name) || name.contains(clazzToPatch.javaObjectType.`package`!!.name))  {
             val bytes = getBytecode(name)
             defineClass(name, bytes, 0, bytes.size)
