@@ -1,6 +1,7 @@
 package me.emmano.androidmva.comics.mvvm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

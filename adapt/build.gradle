@@ -78,6 +78,7 @@ dependencies {
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'androidx.test:core:1.2.0'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0'
+    testImplementation "org.ow2.asm:asm-tree:7.0"
 }
 
 publishing {

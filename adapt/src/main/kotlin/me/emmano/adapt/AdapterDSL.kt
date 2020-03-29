@@ -29,7 +29,7 @@ class AdapterDSL<M : Identity<M>> {
 }
 
 fun <M : Identity<M>> adapter(dsl: AdapterDSL<M>.() -> Unit): Lazy<ModelAdapter<M>> =
-    lazy { ModelAdapter(AdapterDSL<M>().apply { dsl() }) }
+    lazy { ModelAdapter(AdapterDSL<M>().apply(dsl))}
 
 fun <M : Identity<M>> adapter(
     modelId: Int,

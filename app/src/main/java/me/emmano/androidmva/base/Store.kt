@@ -1,5 +1,7 @@
 package me.emmano.androidmva.base
 
+import android.util.Log
+import androidx.lifecycle.liveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,6 +30,7 @@ class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher 
 
     fun error(action: (cause: Throwable) -> ((S) -> S)) {
         errorAction = action
+        Log.e("XXXX", "S")
     }
 
     private val streamStoreAction by lazy {
@@ -50,6 +53,7 @@ class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher 
     }
 
     val combinedState by lazy {
+
         flowOf(syncState, asyncState, streamStoreAction)
             .flattenMerge()
             .scan(initialState, operation)
@@ -61,6 +65,12 @@ class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher 
         when (action) {
             is AsyncStoreAction -> asyncActions.send(action)
             is SyncStoreAction -> syncActions.send(action)
+        }
+    }
+
+    fun <T> Flow<T>.myFirst() = flow {
+        collect {
+            emit(this@myFirst.first())
         }
     }
 

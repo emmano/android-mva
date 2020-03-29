@@ -2,14 +2,21 @@ package me.emmano.adapt
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
+import org.junit.runner.RunWith
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
-class ModelAdapterTest : RobolectricTest() {
+@RunWith(LooperMockTestRunner::class)
+@Patch(AsyncListDiffer::class)
+class ModelAdapterTest  {
 
     @Test
     fun `onCreateViewHolder - delegates to dsl for view holder creation`() {
@@ -39,6 +46,11 @@ class ModelAdapterTest : RobolectricTest() {
 
         val testObject = ModelAdapter(adapterDSL)
 
+//        val mObserver = testObject::class.java.superclass!!.superclass!!.declaredFields[0].apply { isAccessible = true }
+
+
+        testObject.registerAdapterDataObserver(mock())
+
         testObject.submitList(listOf(model))
 
         val position = 0
@@ -46,6 +58,10 @@ class ModelAdapterTest : RobolectricTest() {
         val actualViewType = testObject.getItemViewType(position)
 
         assertThat(actualViewType, equalTo(viewType))
+
+    }
+
+    class Observer : AdapterDataObserver() {
 
     }
 
@@ -65,5 +81,16 @@ class ModelAdapterTest : RobolectricTest() {
         testObject.onBindViewHolder(holder, position)
 
         verify(holder) bind model
+    }
+
+    @Throws(Exception::class)
+    fun setFinalStatic(field: Field, newValue: Any?) {
+        field.isAccessible = true
+        val modifiersField = Field::class.java.getDeclaredField(
+                "modifiers")
+        modifiersField.isAccessible = true
+        modifiersField.setInt(field,
+                field.modifiers and Modifier.FINAL.inv())
+        field.set(null, newValue)
     }
 }
