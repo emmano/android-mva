@@ -3,7 +3,6 @@ package me.emmano.adapt
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -14,6 +13,8 @@ import org.junit.runner.RunWith
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
+@RunWith(LooperMockRunner::class)
+@Patch(AsyncListDiffer::class)
 class ModelAdapterTest  {
 
     @Test
@@ -43,7 +44,6 @@ class ModelAdapterTest  {
         val adapterDSL = AdapterDSL<Model>().apply { getViewTypes(viewTypes) }
 
         val testObject = ModelAdapter(adapterDSL)
-
         testObject.submitList(listOf(model))
 
         val position = 0
@@ -70,16 +70,5 @@ class ModelAdapterTest  {
         testObject.onBindViewHolder(holder, position)
 
         verify(holder) bind model
-    }
-
-    @Throws(Exception::class)
-    fun setFinalStatic(field: Field, newValue: Any?) {
-        field.isAccessible = true
-        val modifiersField = Field::class.java.getDeclaredField(
-                "modifiers")
-        modifiersField.isAccessible = true
-        modifiersField.setInt(field,
-                field.modifiers and Modifier.FINAL.inv())
-        field.set(null, newValue)
     }
 }

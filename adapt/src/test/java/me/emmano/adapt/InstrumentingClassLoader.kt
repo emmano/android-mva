@@ -9,13 +9,25 @@ class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() 
     override fun loadClass(name: String, resolve: Boolean): Class<*> {
         val findLoadedClass = findLoadedClass(name)
         if (findLoadedClass != null) return findLoadedClass
-        if(name.contains("java")) return parent.loadClass(name)
 
         if (name == "android.os.Looper") {
             val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
             val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
             val classVisitor =
-                    MockClassAdapter(writer)
+                    LooperClassAdapter(writer)
+
+            reader.accept(classVisitor, 0)
+
+            val bytes = writer.toByteArray()
+
+            return defineClass(name, bytes, 0, bytes.size)
+        }
+
+        if(name == "android.database.Observable") {
+            val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
+            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
+            val classVisitor =
+                ObservableClassAdapter(writer)
 
             reader.accept(classVisitor, 0)
 
@@ -24,7 +36,7 @@ class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() 
             return defineClass(name, bytes, 0, bytes.size)
         }
         val clazzToPatch = checkNotNull(testClazz.getAnnotation(Patch::class.java), {"Did you forget to specify @Patch?"}).clazz
-        return if(name.contains(this::class.java.`package`!!.name) || name.contains(clazzToPatch.javaObjectType.`package`!!.name))  {
+        return if(name.contains(testClazz.`package`!!.name) || name.contains(clazzToPatch.javaObjectType.`package`!!.name))  {
             val bytes = getBytecode(name)
             defineClass(name, bytes, 0, bytes.size)
         } else super.loadClass(name, resolve)

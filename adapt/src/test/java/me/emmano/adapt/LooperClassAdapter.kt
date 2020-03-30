@@ -6,7 +6,7 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.GeneratorAdapter
 
-class MockClassAdapter(writer: ClassWriter) : ClassVisitor(
+class LooperClassAdapter(writer: ClassWriter) : ClassVisitor(
         Opcodes.ASM4, writer) {
 
     override fun visitMethod(
