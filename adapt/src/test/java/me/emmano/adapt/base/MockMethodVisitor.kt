@@ -1,4 +1,4 @@
-package me.emmano.adapt
+package me.emmano.adapt.base
 
 import org.mockito.Mockito
 import org.objectweb.asm.ClassReader

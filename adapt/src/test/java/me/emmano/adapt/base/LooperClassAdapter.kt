@@ -1,4 +1,4 @@
-package me.emmano.adapt
+package me.emmano.adapt.base
 
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
@@ -19,12 +19,12 @@ class LooperClassAdapter(writer: ClassWriter) : ClassVisitor(
         if (name.orEmpty() == "getMainLooper") {
             val visitor = cv.visitMethod(access, name, descriptor, signature, exceptions)
             return MockMethodVisitor(
-                    GeneratorAdapter(
-                            visitor,
-                            access,
-                            name,
-                            descriptor
-                    )
+                GeneratorAdapter(
+                    visitor,
+                    access,
+                    name,
+                    descriptor
+                )
             )
         } else {
             return super.visitMethod(access, name, descriptor, signature, exceptions)

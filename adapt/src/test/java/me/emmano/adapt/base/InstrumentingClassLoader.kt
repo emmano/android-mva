@@ -1,4 +1,4 @@
-package me.emmano.adapt
+package me.emmano.adapt.base
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
@@ -14,7 +14,7 @@ class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() 
             val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
             val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
             val classVisitor =
-                    LooperClassAdapter(writer)
+                LooperClassAdapter(writer)
 
             reader.accept(classVisitor, 0)
 

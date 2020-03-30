@@ -4,6 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import com.nhaarman.mockitokotlin2.mockingDetails
+import me.emmano.adapt.base.LooperMockRunner
+import me.emmano.adapt.base.Patch
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test

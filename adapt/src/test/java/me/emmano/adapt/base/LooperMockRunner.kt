@@ -1,4 +1,4 @@
-package me.emmano.adapt
+package me.emmano.adapt.base
 
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runners.model.FrameworkMethod
@@ -6,7 +6,8 @@ import org.junit.runners.model.Statement
 
 class LooperMockRunner(private val clazz: Class<*>) : BlockJUnit4ClassRunner(clazz) {
     val instrumentingClassLoader = InstrumentingClassLoader(
-        clazz)
+        clazz
+    )
     override fun methodBlock(method: FrameworkMethod): Statement {
         super.methodBlock(method)
 

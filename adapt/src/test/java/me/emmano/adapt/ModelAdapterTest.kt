@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import me.emmano.adapt.base.LooperMockRunner
+import me.emmano.adapt.base.Patch
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 @RunWith(LooperMockRunner::class)
 @Patch(AsyncListDiffer::class)
