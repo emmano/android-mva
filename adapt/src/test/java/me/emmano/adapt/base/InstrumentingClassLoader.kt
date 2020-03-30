@@ -36,7 +36,7 @@ class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() 
             return defineClass(name, bytes, 0, bytes.size)
         }
         val clazzToPatch = checkNotNull(testClazz.getAnnotation(Patch::class.java), {"Did you forget to specify @Patch?"}).clazz
-        return if(name.contains(testClazz.`package`!!.name) || name.contains(clazzToPatch.javaObjectType.`package`!!.name))  {
+        return if(name.contains(testClazz.`package`!!.name) || name.contains(clazzToPatch.javaObjectType.`package`!!.name) || name.contains("android.os.Handler"))  {
             val bytes = getBytecode(name)
             defineClass(name, bytes, 0, bytes.size)
         } else super.loadClass(name, resolve)
