@@ -19,7 +19,7 @@ class LooperMockRunnerTest {
     fun `getMainLooper returns mock`() {
         val looper = Looper.getMainLooper()
         val isMock = mockingDetails(looper).isMock
-        assertThat(isMock, equalTo(isMock))
+        assertThat(isMock, equalTo(true))
         LooperUser()
     }
 }
