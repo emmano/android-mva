@@ -3,7 +3,7 @@ package me.emmano.adapt.base
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 
-open class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader(){
+class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader(){
 
     @Throws(ClassNotFoundException::class)
     override fun loadClass(name: String, resolve: Boolean): Class<*> {

@@ -1,7 +1,6 @@
 package me.emmano.adapt
 
 import android.content.Context
-import android.osx.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
