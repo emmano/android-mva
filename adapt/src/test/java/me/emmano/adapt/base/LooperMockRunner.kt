@@ -3,11 +3,15 @@ package me.emmano.adapt.base
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.Statement
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 class LooperMockRunner(private val clazz: Class<*>) : BlockJUnit4ClassRunner(clazz) {
-    val instrumentingClassLoader = InstrumentingClassLoader(
-        clazz
-    )
+
+    private val executorService =  Executors.newSingleThreadExecutor()
+
     override fun methodBlock(method: FrameworkMethod): Statement {
         super.methodBlock(method)
 
@@ -15,13 +19,43 @@ class LooperMockRunner(private val clazz: Class<*>) : BlockJUnit4ClassRunner(cla
             override fun evaluate() {
 
 
-                val testClass = instrumentingClassLoader.loadClass(clazz.name)
-                val method = testClass.getMethod(method.method.name)
-                val helper = HelperTestRunner(testClass)
-                val statement = helper.methodBlock(FrameworkMethod(method))
-                statement.evaluate()
+                runOnTestThread(Runnable{
+                    val parent = Thread.currentThread().contextClassLoader
+                    Thread.currentThread().contextClassLoader = SandboxClassLoader(clazz)
+                    val loader = Thread.currentThread().contextClassLoader
+                    val testClass = loader.loadClass(clazz.name)
+                    val method = testClass.getMethod(method.method.name)
+                    val helper = HelperTestRunner(testClass)
+                    val statement = helper.methodBlock(FrameworkMethod(method))
+                    try {
 
+                        statement.evaluate()
+                    } catch(e: Exception) {
+                        throw e
+                    } finally {
+                        Thread.currentThread().contextClassLoader = parent
+                    }
+                })
             }
+        }
+    }
+
+    fun runOnTestThread(runnable: Runnable) {
+        runOnTestThread(Callable<Any?> {
+            runnable.run()
+            null
+        })
+    }
+
+    fun <T> runOnTestThread(callable: Callable<T>): T {
+        val future: Future<T> = executorService.submit(callable)
+        return try {
+            future.get()
+        } catch (e: InterruptedException) {
+            future.cancel(true)
+            throw RuntimeException(e)
+        } catch (e: ExecutionException) {
+            throw e
         }
     }
 }

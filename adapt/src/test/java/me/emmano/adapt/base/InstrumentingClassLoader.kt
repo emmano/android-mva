@@ -5,70 +5,86 @@ import org.objectweb.asm.ClassWriter
 import java.io.File
 import kotlin.reflect.KClass
 
-class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() {
+open class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader(){
 
+    @Throws(ClassNotFoundException::class)
     override fun loadClass(name: String, resolve: Boolean): Class<*> {
+
         val findLoadedClass = findLoadedClass(name)
         if (findLoadedClass != null) return findLoadedClass
 
-        if (name == "android.os.Looper") {
-            val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
-            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
-            val classVisitor =
-                LooperClassAdapter(writer)
-
-            reader.accept(classVisitor, 0)
-
-            val bytes = writer.toByteArray()
-
-            return defineClass(name, bytes, 0, bytes.size)
+        if(name.contains("MockMethodDispatcher") ){
+            return super.loadClass(name, resolve)
+        }
+        if(name == "org.mockito.configuration.MockitoConfiguration") {
+            throw ClassNotFoundException()
         }
 
-        if(name == "android.database.Observable") {
-            val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
-            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
-            val classVisitor =
-                ObservableClassAdapter(writer)
+        if(shouldAcquire(name)) {
+            if (name == "android.os.Looper") {
+                        val bytes = LooperPatcher.patch()
 
-            reader.accept(classVisitor, 0)
 
-            val bytes = writer.toByteArray()
+                return defineClass(name, bytes, 0, bytes.size)
+            }
 
-            return defineClass(name, bytes, 0, bytes.size)
+            else if (name == "android.database.Observable") {
+                val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
+                val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
+                val classVisitor =
+                        ObservableClassAdapter(writer)
+
+                reader.accept(classVisitor, 0)
+
+                val bytes = writer.toByteArray()
+
+                return defineClass(name, bytes, 0, bytes.size)
+            }
+
+            else if (name == "android.view.LayoutInflater") {
+
+                val bytes = LayoutInflaterPatcher.patch()
+
+                return defineClass(name, bytes, 0, bytes.size)
+            }
+
+           else  if (name == "androidx.databinding.DataBindingUtil") {
+
+                val bytes = DataBindingUtilPatcher.patch()
+
+                return defineClass(name, bytes, 0, bytes.size)
+            }
+            else {
+                val bytes = getBytecode(name)
+                return defineClass(name, bytes, 0, bytes.size)
+            }
+        }else {
+            return parent.loadClass(name)
         }
 
-        if(name == "android.view.LayoutInflater") {
-            val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
-            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
-            val classVisitor =
-                InflaterClassAdapter(writer)
-
-            reader.accept(classVisitor, 0)
-
-            val bytes = writer.toByteArray()
-
-            return defineClass(name, bytes, 0, bytes.size)
-        }
-        val clazzToPatch = checkNotNull(testClazz.getAnnotation(Patch::class.java), {"Did you forget to specify @Patch?"}).clazz
-        return if(name.contains(testClazz.`package`!!.name) || name.contains(clazzToPatch.javaObjectType.`package`!!.name) || name.contains("android.os.Handler"))  {
-            val bytes = getBytecode(name)
-            defineClass(name, bytes, 0, bytes.size)
-        } else super.loadClass(name, resolve)
     }
+
+    private fun shouldAcquire(name: String) =
+            name.contains("androidx.")
+                    || name.contains("android.")  || name.contains("com.nh") || (name.contains("org.mockito") )
+                    || name.contains(testClazz.`package`!!.name)
 
     private fun getBytecode(name: String): ByteArray {
         val reader = ClassReader(getResourceAsStream(generateInternalClassName(name)))
         val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
 
         reader.accept(writer, 0)
-        val file = File("$name.class")
 
+        val file = File("$name.class")
         file.writeBytes(writer.toByteArray())
         return writer.toByteArray()
     }
 
-    private fun generateInternalClassName(name: String) = name.replace(".", "/") + ".class"
+    private fun generateInternalClassName(name: String) : String {
+        val extension = if(name == "org.mockito.internal.creation.bytebuddy.MockMethodDispatcher" || name == "org.mockito.internal.creation.bytebuddy.inject.MockMethodDispatcher" ) ".raw" else ".class"
+        return  name.replace(".", "/") + extension}
 }
+
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
 @Target(
         AnnotationTarget.CLASS
@@ -76,3 +92,5 @@ class InstrumentingClassLoader(private val testClazz: Class<*>) : ClassLoader() 
 annotation class Patch(
         val clazz: KClass<*>
 )
+
+class SandboxClassLoader(clazz: Class<*>) : InstrumentingClassLoader(clazz)

@@ -1,31 +1,73 @@
 package me.emmano.adapt
 
 import android.content.Context
+import android.osx.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
-import com.nhaarman.mockitokotlin2.*
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import me.emmano.adapt.base.LooperMockRunner
-import me.emmano.adapt.base.MyTest
-import me.emmano.adapt.base.Patch
+import org.hamcrest.Matchers.equalTo
+import org.junit.Assert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(LooperMockRunner::class)
-@Patch(AsyncListDiffer::class)
 class CustomAdapterTest {
 
-    @Test
-    fun name() {
+    private val testObject by adapter<Model> {
 
-        MyTest()
-        val context = mock<Context>()
-        val parent = mock<ViewGroup>{on { this.context } doReturn context}
-        whenever(LayoutInflater.from(context).inflate(any<Int>(), any(), any())) doReturn mock()
+        val TYPE_HEADER = 1
+        val TYPE_CONTENT = 2
 
-        val testObject = CustomAdapter()
+        onCreateViewHolder { parent, viewType ->
+            when (viewType) {
+                TYPE_HEADER -> holder<ViewDataBinding, Header>(parent, R.layout.header, BR.header)
 
-        val holder = testObject.onCreateViewHolder(parent, 0)
+                TYPE_CONTENT -> holder<ViewDataBinding, Content>(parent, R.layout.content, BR.content)
 
+                else -> throw IllegalStateException("ViewHolder not supported for itemViewType: $viewType")
+            }
+        }
+
+        getViewTypes {
+            when (it) {
+                is Header -> TYPE_HEADER
+                is Content -> TYPE_CONTENT
+            }
+        }
     }
+
+    @Test
+    fun `onBindViewHolder - binds data for header`() = bindingTest { binding ->
+
+        Looper.getMainLooper()
+        val header = mock<Header>()
+
+        testObject.submitList(listOf(header))
+
+        val holder = testObject.onCreateViewHolder(mock(), 1)
+
+        testObject.onBindViewHolder(holder, 0)
+
+        verify(binding).setVariable(BR.header, header)
+
+        assertThat(testObject.itemCount, equalTo(1))
+    }
+
+}
+
+fun bindingTest(block: (ViewDataBinding) -> Unit) {
+    val context = mock<Context>()
+    val inflater = LayoutInflater.from(context)
+
+    val parent = mock<ViewGroup>()
+    val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, 0, parent, false)
+    whenever(binding.root) doReturn mock()
+    block(binding)
 }
