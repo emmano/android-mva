@@ -1,1 +1,1 @@
-include ':app', ':marvelapi', ':adapt'
+include ':app', ':marvelapi', ':adapt', ':patch'

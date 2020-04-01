@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.KStubbing
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.validateMockitoUsage
 import org.junit.After
 import org.junit.runner.RunWith
@@ -32,5 +33,13 @@ abstract class RobolectricTest : AutoCloseKoinTest() {
          loadKoinModules(module{
              viewModel { KStubbing(mock).stubbing(mock);mock }
          })
+
+
+    inline fun <reified T : Any> override(noinline stubbing: (KStubbing<T>.(T) -> Unit)? = null): Unit =
+        loadKoinModules(module {
+            single {
+                mock<T>()
+            }
+        }).run { if (stubbing != null) getKoin().get<T>().stub(stubbing) }
 
 }

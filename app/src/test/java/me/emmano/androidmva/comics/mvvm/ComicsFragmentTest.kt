@@ -26,11 +26,11 @@ class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
     override val coroutineRule: CoroutineTestRule = CoroutineTestRule()
 
     private val viewModel: ComicsViewModel by inject()
-    private val comics = MutableLiveData<List<ComicModel>>()
+    private val comicsData = MutableLiveData<List<ComicModel>>()
 
     @Before
     fun setUp() {
-        declareViewModelMock<ComicsViewModel> { on { comics } doReturn comics }
+        override<ComicsViewModel> { on { comics } doReturn comicsData }
     }
 
     @Test
@@ -41,7 +41,7 @@ class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
 
         verify(viewModel).loadComics()
 
-        comics.value = listOf(comicCell)
+        comicsData.value = listOf(comicCell)
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
