@@ -1,7 +1,5 @@
 package me.emmano.androidmva.base
 
-import android.util.Log
-import androidx.lifecycle.liveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +28,6 @@ class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher 
 
     fun error(action: (cause: Throwable) -> ((S) -> S)) {
         errorAction = action
-        Log.e("XXXX", "S")
     }
 
     private val streamStoreAction by lazy {

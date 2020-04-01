@@ -1,14 +1,4 @@
 def VERSION = '0.2.0'
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'digital.wup:android-maven-publish:3.6.2'
-    }
-}
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
@@ -78,8 +68,6 @@ dependencies {
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'androidx.test:core:1.2.0'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0'
-    testImplementation "org.ow2.asm:asm-tree:7.0"
-    testImplementation 'net.bytebuddy:byte-buddy:1.9.3'
 }
 
 publishing {
@@ -101,7 +89,7 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
     publications = ['mavenReleaseAar']
 
-    dryRun = false
+    dryRun = true
     publish = false
     pkg {
         repo = 'emmano'
