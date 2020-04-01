@@ -4,9 +4,9 @@ import org.mockito.Mockito;
 
 public class Looper {
 
-  private static Looper looper = new Looper();
+  private static Looper instance = Mockito.mock(Looper.class);
 
   public static Looper getMainLooper() {
-    return looper;
+    return instance;
   }
 }

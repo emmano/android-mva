@@ -18,10 +18,9 @@ class LooperMockRunner(private val clazz: Class<*>) : BlockJUnit4ClassRunner(cla
         return object : Statement() {
             override fun evaluate() {
 
-
                 runOnTestThread(Runnable{
                     val parent = Thread.currentThread().contextClassLoader
-                    Thread.currentThread().contextClassLoader = SandboxClassLoader(clazz)
+                    Thread.currentThread().contextClassLoader = InstrumentingClassLoader(clazz)
                     val loader = Thread.currentThread().contextClassLoader
                     val testClass = loader.loadClass(clazz.name)
                     val method = testClass.getMethod(method.method.name)

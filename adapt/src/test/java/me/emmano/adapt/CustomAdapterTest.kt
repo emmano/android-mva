@@ -46,7 +46,6 @@ class CustomAdapterTest {
     @Test
     fun `onBindViewHolder - binds data for header`() = bindingTest { binding ->
 
-        Looper.getMainLooper()
         val header = mock<Header>()
 
         testObject.submitList(listOf(header))

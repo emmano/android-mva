@@ -6,10 +6,7 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import me.emmano.adapt.base.LooperMockRunner
-import org.junit.Assert.fail
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class BindableViewHolderTest {
 
