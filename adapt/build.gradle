@@ -9,8 +9,7 @@ apply plugin: 'digital.wup.android-maven-publish'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.1"
-
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         minSdkVersion 21
@@ -67,7 +66,8 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.3.1'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'androidx.test:core:1.2.0'
-    debugImplementation 'androidx.fragment:fragment-testing:1.1.0'
+    debugImplementation 'androidx.fragment:fragment-testing:1.2.3'
+    testImplementation 'me.emmano:patch:0.2.0'
 }
 
 publishing {

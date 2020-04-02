@@ -10,13 +10,13 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import me.emmano.adapt.base.LooperMockRunner
+import me.emmano.patch.PatchingRunner
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(LooperMockRunner::class)
+@RunWith(PatchingRunner::class)
 class CustomAdapterTest {
 
     private val testObject by adapter<Model> {

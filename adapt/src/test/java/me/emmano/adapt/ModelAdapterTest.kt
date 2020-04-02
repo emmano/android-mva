@@ -5,13 +5,13 @@ import androidx.databinding.ViewDataBinding
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import me.emmano.adapt.base.LooperMockRunner
+import me.emmano.patch.PatchingRunner
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(LooperMockRunner::class)
+@RunWith(PatchingRunner::class)
 class ModelAdapterTest  {
 
     @Test
