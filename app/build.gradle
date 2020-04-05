@@ -1,11 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.1"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "me.emmano.androidmva"
         minSdkVersion 21
@@ -39,8 +38,13 @@ android {
     }
 }
 
+repositories {
+    maven { url "https://dl.bintray.com/emmano/emmano" }
+}
+
 dependencies {
     implementation project(':marvelapi')
+    implementation 'me.emmano:state:0.1.0'
     implementation 'me.emmano:adapt:0.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

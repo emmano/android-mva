@@ -1,4 +1,4 @@
-package me.emmano.androidmva.base
+package me.emmano.state
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -7,17 +7,20 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.*
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.core.IsEqual.equalTo
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import kotlin.IllegalStateException
 
 
-class BaseViewModelTest : BaseTest() {
+class BaseViewModelTest : CoroutineTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    override val coroutineRule = CoroutineTestRule()
 
     @Test
     fun `initial state is broadcasted`() = test {
@@ -35,7 +38,7 @@ class BaseViewModelTest : BaseTest() {
         val secondState = TestState(someString = "stringB", showError = true, loading = false)
         val thirdState = TestState(someString = "stringC", showError = false, loading = true)
         val observer = mock<Observer<in TestState>>()
-        val testObject = object : BaseViewModel<TestState>(Store(initialState, this)) {
+        val testObject = object : BaseViewModel<TestState>(ViewStateProvider(initialState, this)) {
             override val errors: (Throwable) -> (TestState) -> TestState = {t: Throwable -> {state -> initialState}}
         }
 
@@ -102,7 +105,7 @@ class BaseViewModelTest : BaseTest() {
 
     }
 
-    private class TestViewModel(dispatcher: CoroutineDispatcher) : BaseViewModel<TestState>(Store(TestState(), dispatcher)) {
+    private class TestViewModel(dispatcher: CoroutineDispatcher) : BaseViewModel<TestState>(ViewStateProvider(TestState(), dispatcher)) {
         override val errors: (Throwable) -> (TestState) -> TestState = {t: Throwable -> {
                 state -> TestState()
         }}

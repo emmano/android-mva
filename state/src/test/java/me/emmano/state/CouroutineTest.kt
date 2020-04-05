@@ -1,11 +1,9 @@
-package me.emmano.androidmva
+package me.emmano.state
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
-import me.emmano.androidmva.base.TestFlow
-import me.emmano.androidmva.rule.CoroutineTestRule
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
