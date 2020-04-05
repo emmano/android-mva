@@ -38,9 +38,13 @@ android {
     }
 }
 
+repositories {
+    maven { url "https://dl.bintray.com/emmano/emmano" }
+}
+
 dependencies {
     implementation project(':marvelapi')
-    implementation project(':state')
+    implementation 'me.emmano:state:0.1.0'
     implementation 'me.emmano:adapt:0.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
