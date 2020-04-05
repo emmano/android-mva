@@ -19,6 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.core.inject
+
 @ExperimentalCoroutinesApi
 class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
 
@@ -36,19 +37,18 @@ class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
     @Test
     fun `load and display comics`() = test {
         val comicCell = ComicModel("title", "description", "imageUrl")
-        val scenario = launchFragmentInContainer<ComicsFragment>()
-        scenario.moveToState(Lifecycle.State.CREATED)
+        launchFragmentInContainer<ComicsFragment>()
 
         verify(viewModel).loadComics()
 
         comicsData.value = listOf(comicCell)
 
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
         onView(withId(R.id.comics))
             .perform(
                 RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(withText(comicCell.title)),
-                click()))
+                    hasDescendant(withText(comicCell.title)),
+                    click()
+                )
+            )
     }
 }

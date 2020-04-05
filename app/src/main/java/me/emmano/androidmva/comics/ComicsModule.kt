@@ -1,5 +1,7 @@
 package me.emmano.androidmva.comics
 
+import kotlinx.coroutines.Dispatchers
+import me.emmano.androidmva.base.Store
 import me.emmano.androidmva.comics.api.MarvelService
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel
 import me.emmano.androidmva.comics.repo.ComicRepository
@@ -10,5 +12,6 @@ import retrofit2.Retrofit
 val comicsModule = module {
     single { get<Retrofit>().create(MarvelService::class.java) }
     single { ComicRepository(get()) }
-    viewModel { ComicsViewModel() }
+    factory { Store(ComicsViewModel.State(), Dispatchers.IO) }
+    viewModel { ComicsViewModel(get()) }
 }
