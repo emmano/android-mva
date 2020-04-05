@@ -1,8 +1,8 @@
 package me.emmano.androidmva.comics.mvvm
 
-import me.emmano.androidmva.base.AsyncStoreAction
-import me.emmano.androidmva.base.SyncStoreAction
 import me.emmano.androidmva.comics.repo.ComicRepository
+import me.emmano.state.AsyncStoreAction
+import me.emmano.state.SyncStoreAction
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 

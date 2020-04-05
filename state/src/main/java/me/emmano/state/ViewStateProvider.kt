@@ -1,15 +1,14 @@
-package me.emmano.androidmva.base
+package me.emmano.state
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class Store<S>(private val initialState: S, val dispatcher: CoroutineDispatcher) {
+class ViewStateProvider<S>(private val initialState: S, val dispatcher: CoroutineDispatcher) {
 
     private val asyncActions by lazy { ConflatedBroadcastChannel<AsyncStoreAction<S>>() }
     private val syncActions by lazy { ConflatedBroadcastChannel<SyncStoreAction<S>>() }

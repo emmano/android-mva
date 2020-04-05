@@ -1,10 +1,11 @@
 package me.emmano.androidmva.comics.mvvm
 
-import me.emmano.androidmva.base.*
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
+import me.emmano.state.BaseViewModel
+import me.emmano.state.ViewStateProvider
 
-class ComicsViewModel(store: Store<State>) :
-    BaseViewModel<State>(store) {
+class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
+    BaseViewModel<State>(viewStateProvider) {
 
     override val errors = { t: Throwable ->
         ShowError

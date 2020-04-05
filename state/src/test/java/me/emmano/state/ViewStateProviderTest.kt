@@ -1,21 +1,11 @@
-package me.emmano.androidmva.base
+package me.emmano.state
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import me.emmano.androidmva.CoroutineTest
-import me.emmano.androidmva.rule.CoroutineTestRule
-import org.hamcrest.Matchers.equalTo
 import org.junit.Rule
 import org.junit.Test
 
-class StoreTest : CoroutineTest{
+class ViewStateProviderTest : CoroutineTest{
 
     @get:Rule
     override val coroutineRule = CoroutineTestRule()
@@ -26,7 +16,7 @@ class StoreTest : CoroutineTest{
 
     @Test
     fun `sync action`() = test {
-        val testObject = Store(TestState(), this)
+        val testObject = ViewStateProvider(TestState(), this)
 
         val state = testObject.combinedState.test()
 
@@ -39,7 +29,7 @@ class StoreTest : CoroutineTest{
 
     @Test
     fun `sync and async actions`() = test {
-        val testObject = Store(TestState(), this)
+        val testObject = ViewStateProvider(TestState(), this)
 
         val state = testObject.combinedState.test()
 

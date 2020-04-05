@@ -1,4 +1,4 @@
-package me.emmano.androidmva.base
+package me.emmano.state
 
 interface Errors<S> {
 
