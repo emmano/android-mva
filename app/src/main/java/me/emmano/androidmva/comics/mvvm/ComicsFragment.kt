@@ -28,14 +28,14 @@ class ComicsFragment : Fragment() {
                comics.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                refresh.setOnRefreshListener {
                    lifecycleScope.launch {
-                       viewModel.loadComics()
+                       viewModel.loadComics(refresh = true)
                    }
                }
            }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadComics()
+        viewModel.loadComics(refresh = false)
     }
 
     override fun onResume() {

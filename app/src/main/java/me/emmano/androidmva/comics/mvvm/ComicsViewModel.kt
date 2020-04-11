@@ -1,10 +1,14 @@
 package me.emmano.androidmva.comics.mvvm
 
+import androidx.lifecycle.viewModelScope
+import com.dropbox.android.external.store4.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 import me.emmano.state.BaseViewModel
 import me.emmano.state.ViewStateProvider
 
-class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
+class ComicsViewModel(private val store: Store<String, List<ComicModel>>, viewStateProvider: ViewStateProvider<State>) :
     BaseViewModel<State>(viewStateProvider) {
 
     override val errors = { t: Throwable ->
@@ -18,9 +22,24 @@ class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
         it.loading
     }
 
-    fun loadComics() {
-        action(Loading)
-        action(LoadComics())
+    fun loadComics(refresh: Boolean) {
+
+        viewModelScope.launch {
+            store.stream( StoreRequest.cached("load", refresh)).collect{ response: StoreResponse<List<ComicModel>> ->
+                when(response) {
+                    is StoreResponse.Loading -> action(Loading)
+                    is StoreResponse.Data<List<ComicModel>> -> {
+                        if (response.origin == ResponseOrigin.Fetcher)
+                            action(LoadComics(response.value))
+                    }
+                    is StoreResponse.Error -> {
+                        if (response.origin == ResponseOrigin.Fetcher)
+                            action(Error)
+                    }
+                }
+            }
+
+        }
     }
 
     data class State(

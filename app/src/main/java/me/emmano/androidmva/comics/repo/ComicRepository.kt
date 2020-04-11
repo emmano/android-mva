@@ -8,7 +8,7 @@ import me.emmano.androidmva.comics.mvvm.LoadingComicsException
 class ComicRepository(private val marvelService: MarvelService) {
 
     @Throws(LoadingComicsException::class)
-    suspend fun comics(): List<ComicModel>? = marvelService.comics().toComicModels()
+    suspend fun comics(): List<ComicModel> = marvelService.comics().toComicModels() ?: emptyList()
 
     private fun ComicDataWrapper.toComicModels(): List<ComicModel>? =
         data.run {
