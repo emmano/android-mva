@@ -115,20 +115,3 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'org.koin:koin-test:2.0.1'
 }
-
-gradle.taskGraph.addTaskExecutionListener new MyListener()
-
-class MyListener implements TaskExecutionListener {
-
-    @Override
-    void beforeExecute(Task task) {
-        if(task.name.contains("kaptDebug")){
-            print ""
-        }
-    }
-
-    @Override
-    void afterExecute(Task task, TaskState state) {
-
-    }
-}

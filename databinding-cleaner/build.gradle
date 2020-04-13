@@ -11,7 +11,7 @@ dependencies {
 sourceCompatibility = "8"
 targetCompatibility = "8"
 
-version="0.7.0"
+version="0.9.0"
 
 pluginBundle {
     website = 'https://github.com/emmano/android-mva/databinding-cleaner'

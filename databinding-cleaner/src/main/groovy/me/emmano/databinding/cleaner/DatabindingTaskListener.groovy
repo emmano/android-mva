@@ -1,11 +1,18 @@
 package me.emmano.databinding.cleaner
-;
 
+import org.gradle.api.Project
+;
 import org.gradle.api.Task;
 import org.gradle.api.execution.TaskExecutionListener;
 import org.gradle.api.tasks.TaskState;
 
 class DatabindingTaskListener implements TaskExecutionListener {
+
+    Project project
+
+    DatabindingTaskListener(Project project){
+        this.project = project
+    }
 
     @Override
     void beforeExecute(Task task) {}
@@ -14,8 +21,9 @@ class DatabindingTaskListener implements TaskExecutionListener {
     void afterExecute(Task task, TaskState state) {
         if(task.name.contains("dataBindingGenBaseClasses")){
             def variables = []
-            def module = task.path.split(":")[1]
-            new File(module).eachFileRecurse { file ->
+            def module = task.path.split(":")[1].toString()
+            def moduleFolderName = project.childProjects[module].projectDir.toPath().last().toString()
+            new File(moduleFolderName).eachFileRecurse { file ->
                 if(file.path.contains("build") && file.name.contains("Binding.java")) {
                     def tmpFile = new File(file.path + ".tmp")
                     tmpFile.withWriter { w ->
