@@ -19,7 +19,7 @@ class DatabindingTaskListener implements TaskExecutionListener {
     @Override
     void afterExecute(Task task, TaskState state) {
         if (task.name.contains("dataBindingGenBaseClasses")) {
-            def variables = []
+            def variables = [:]
             def module = task.path.split(":")[1].toString()
             def moduleFolderName = project.childProjects[module].projectDir.toPath().last().toString()
             new File(moduleFolderName).eachFileRecurse { file ->
@@ -44,7 +44,7 @@ class DatabindingTaskListener implements TaskExecutionListener {
                                 def lineWithVariable = line.split(" ")
                                 def variable = lineWithVariable.last().replace(";", "")
                                 if (variable.length() != 0) {
-                                    variables.add(variable)
+                                    variables[(variable)] = line.contains("RecyclerView")
                                     println variables
                                 }
                             } else if (line.contains("}") && shouldOverride) {
@@ -57,7 +57,10 @@ class DatabindingTaskListener implements TaskExecutionListener {
                                 w << '@OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)' << '\n'
                                 w << 'public void onDestroy() {' << '\n'
                                 variables.each {
-                                    w << "$it = null;" << '\n'
+                                    if(it.value){
+                                        w << "$it.key"+ ".setAdapter(null);" << '\n'
+                                    }
+                                    w << "$it.key = null;" << '\n'
                                 }
 
                                 w << 'try {' << '\n'
