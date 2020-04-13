@@ -6,14 +6,16 @@ import org.gradle.api.execution.TaskExecutionListener;
 import org.gradle.api.tasks.TaskState;
 
 class DatabindingTaskListener implements TaskExecutionListener {
-    def processed = false
 
     @Override
-    void beforeExecute(Task task) {
-        if(task.name == "kaptDebugKotlin" && !processed){
-            processed = true
+    void beforeExecute(Task task) {}
+
+    @Override
+    void afterExecute(Task task, TaskState state) {
+        if(task.name.contains("dataBindingGenBaseClasses")){
             def variables = []
-            new File(".").eachFileRecurse { file ->
+            def module = task.path.split(":")[1]
+            new File(module).eachFileRecurse { file ->
                 if(file.path.contains("build") && file.name.contains("Binding.java")) {
                     def tmpFile = new File(file.path + ".tmp")
                     tmpFile.withWriter { w ->
@@ -61,10 +63,5 @@ class DatabindingTaskListener implements TaskExecutionListener {
                 }
             }
         }
-    }
-
-    @Override
-    void afterExecute(Task task, TaskState state) {
-
     }
 }

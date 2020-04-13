@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'digital.wup:android-maven-publish:3.6.2'
+        classpath files('app/libs/databinding-cleaner-0.7.0.jar')
     }
 }
 
@@ -36,3 +37,5 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+apply plugin: 'me.emmano.databinding-cleaner'

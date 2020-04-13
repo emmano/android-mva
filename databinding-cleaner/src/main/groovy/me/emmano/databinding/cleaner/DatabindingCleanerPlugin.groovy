@@ -6,6 +6,6 @@ import org.gradle.api.Project;
 class DatabindingCleanerPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
-        project.gradle.taskGraph.addTaskExecutionGraphListener new DatabindingTaskListener()
+        project.gradle.taskGraph.addTaskExecutionListener new DatabindingTaskListener()
     }
 }

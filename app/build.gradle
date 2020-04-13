@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
@@ -44,8 +45,9 @@ repositories {
 
 dependencies {
     implementation project(':marvelapi')
+    implementation project(':adapt')
     implementation 'me.emmano:state:0.2.0'
-    implementation 'me.emmano:adapt:0.1.0'
+//    implementation 'me.emmano:adapt:0.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -112,4 +114,21 @@ dependencies {
     androidTestImplementation 'com.agoda.kakao:kakao:2.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'org.koin:koin-test:2.0.1'
+}
+
+gradle.taskGraph.addTaskExecutionListener new MyListener()
+
+class MyListener implements TaskExecutionListener {
+
+    @Override
+    void beforeExecute(Task task) {
+        if(task.name.contains("kaptDebug")){
+            print ""
+        }
+    }
+
+    @Override
+    void afterExecute(Task task, TaskState state) {
+
+    }
 }
