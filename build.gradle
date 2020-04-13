@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'digital.wup:android-maven-publish:3.6.2'
-        classpath files('app/libs/databinding-cleaner-0.8.0.jar')
+        classpath files('app/libs/databinding-cleaner-0.9.0.jar')
     }
 }
 

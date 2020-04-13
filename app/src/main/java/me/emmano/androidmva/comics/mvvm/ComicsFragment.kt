@@ -19,10 +19,11 @@ class ComicsFragment : Fragment() {
 
     private val viewModel: ComicsViewModel by viewModel()
     private val adapter by adapter<ComicModel>(BR.comicModel, R.layout.comic_cell)
+    private lateinit var binding: FragmentComicsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
            FragmentComicsBinding.inflate(inflater, container, false).apply{
-               lifecycleOwner = this@ComicsFragment
+               lifecycleOwner = viewLifecycleOwner
                vm = viewModel
                comics.adapter = adapter
                comics.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -31,7 +32,7 @@ class ComicsFragment : Fragment() {
                        viewModel.loadComics()
                    }
                }
-           }.root
+          binding = this }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,6 +44,10 @@ class ComicsFragment : Fragment() {
         viewModel.comics.observe(this, Observer {
             adapter.submitList(it)
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
 }
