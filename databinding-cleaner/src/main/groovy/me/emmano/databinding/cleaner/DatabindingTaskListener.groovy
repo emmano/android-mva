@@ -37,12 +37,16 @@ class DatabindingTaskListener implements TaskExecutionListener {
                                 w << "import androidx.lifecycle.OnLifecycleEvent;" << '\n'
                                 w << "import java.lang.reflect.Field;" << '\n'
                                 w << "import java.lang.reflect.Modifier;" << '\n'
-                            } else if (line.contains("final") && !line.contains("protected")) {
+                                w << "import java.util.List;" << '\n'
+                                w << "import java.util.ArrayList;" << '\n'
+                            } else if (line.contains("final") || line.contains("protected") && !line.contains(fileName)) {
                                 w << line.replace("final ", "") << '\n'
                                 def lineWithVariable = line.split(" ")
                                 def variable = lineWithVariable.last().replace(";", "")
-                                variables.add(variable)
-                                println variables
+                                if (variable.length() != 0) {
+                                    variables.add(variable)
+                                    println variables
+                                }
                             } else if (line.contains("}") && shouldOverride) {
                                 shouldOverride = false
                                 w << line << '\n'
@@ -55,17 +59,39 @@ class DatabindingTaskListener implements TaskExecutionListener {
                                 variables.each {
                                     w << "$it = null;" << '\n'
                                 }
+
                                 w << 'try {' << '\n'
                                 w << 'Field root = ViewDataBinding.class.getDeclaredField("mRoot");' << '\n'
                                 w << '   root.setAccessible(true);' << '\n'
                                 w << 'Field modifiersField = Field.class.getDeclaredField( "accessFlags" );' << '\n'
                                 w << 'modifiersField.setAccessible( true );' << '\n'
                                 w << 'modifiersField.setInt( root, root.getModifiers() & ~Modifier.FINAL );' << '\n'
-                                w << "root.set($fileName" +".this, null);" << '\n'
+                                w << "root.set($fileName" + ".this, null);" << '\n'
+                                w << '} catch (NoSuchFieldException | IllegalAccessException e) {' << '\n'
+                                w << 'e.printStackTrace();' << '\n'
+                                w << '}' << '\n'
+
+                                w << 'List<String> boundViews = new ArrayList<>();' << '\n'
+                                w << "Field[] fields = $fileName" +'Impl.class.getDeclaredFields();' << '\n'
+                                w << 'for (Field field : fields) {' << '\n'
+                                w << 'if(field.getName().contains("mboundView")){' << '\n'
+                                w << 'boundViews.add(field.getName());' << '\n'
+                                w << '}}' << '\n'
+
+                                w << 'for (String boundViewField : boundViews) {' << '\n'
+                                w << 'try {' << '\n'
+                                w << "Field boundView = $fileName" + 'Impl.class.getDeclaredField(boundViewField);' << '\n'
+                                w << 'boundView.setAccessible(true);' << '\n'
+                                w << 'Field modifiersField = Field.class.getDeclaredField( "accessFlags" );' << '\n'
+                                w << 'modifiersField.setAccessible( true );' << '\n'
+                                w << 'modifiersField.setInt( boundView, boundView.getModifiers() & ~Modifier.FINAL );' << '\n'
+                                w << "boundView.set($fileName" + ".this, null);" << '\n'
                                 w << '} catch (NoSuchFieldException | IllegalAccessException e) {' << '\n'
                                 w << 'e.printStackTrace();' << '\n'
                                 w << '}' << '\n'
                                 w << '\n' << '}' << '\n'
+                                w << '}' << '\n'
+
                                 w << '});' << '\n'
                                 w << '}' << '\n'
                             } else {
