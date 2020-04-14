@@ -44,7 +44,7 @@ class DatabindingTaskListener implements TaskExecutionListener {
                                 def lineWithVariable = line.split(" ")
                                 def variable = lineWithVariable.last().replace(";", "")
                                 if (variable.length() != 0) {
-                                    variables[(variable)] = line.contains("RecyclerView")
+                                    variables[(variable)] = line.contains("RecyclerView") || line.contains("ViewPager")
                                     println variables
                                 }
                             } else if (line.contains("}") && shouldOverride) {
