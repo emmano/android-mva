@@ -138,9 +138,9 @@ class ModelAdapterTest  {
 
 Here is a side by side comparison for the test shown above. Robolectric was already downloaded before running the test. Having to download robolectric added around half a second more to the test run.
 
-![Tests ran using Patcher](https://imgur.com/b0jT0MG)
+![Tests ran using Patcher](https://i.imgur.com/b0jT0MG.png)
 
-![Tests ran using Robolectric](https://imgur.com/YJT6U6a)
+![Tests ran using Robolectric](https://i.imgur.com/YJT6U6a.png)
 
 # TODO
 1. Add support for `android.util.Log`
