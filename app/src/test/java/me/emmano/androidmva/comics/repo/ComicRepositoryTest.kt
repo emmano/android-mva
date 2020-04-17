@@ -4,13 +4,10 @@ import com.marvel.api.Comic
 import com.marvel.api.ComicDataContainer
 import com.marvel.api.ComicDataWrapper
 import com.marvel.api.Image
-import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import me.emmano.androidmva.CoroutineTest
-import me.emmano.androidmva.comics.api.MarvelService
 import me.emmano.androidmva.comics.mvvm.ComicModel
-import me.emmano.androidmva.comics.mvvm.LoadingComicsException
 import me.emmano.androidmva.rule.CoroutineTestRule
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.Assert.assertThat

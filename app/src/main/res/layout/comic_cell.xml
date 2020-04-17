@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+<!--<layout-->
+<!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--        xmlns:tools="http://schemas.android.com/tools">-->
 
-    <data>
-        <variable name="comicModel" type="me.emmano.androidmva.comics.mvvm.ComicModel"/>
-    </data>
+<!--    <data>-->
+<!--        <variable name="comicModel" type="me.emmano.androidmva.comics.mvvm.ComicModel"/>-->
+<!--    </data>-->
 
     <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
@@ -27,7 +30,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    app:imageUrl="@{comicModel.imageUrl}"
             />
 
             <TextView
@@ -52,4 +54,4 @@
 
     </androidx.cardview.widget.CardView>
 
-</layout>
+<!--</layout>-->

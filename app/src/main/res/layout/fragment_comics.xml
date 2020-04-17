@@ -4,7 +4,7 @@
     <data>
         <variable
             name="vm"
-            type="me.emmano.androidmva.comics.mvvm.ComicsViewModel" />
+            type="me.emmano.state.comics.ComicsMapper" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

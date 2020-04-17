@@ -1,21 +1,13 @@
-package me.emmano.androidmva.comics.mvvm
+package me.emmano.state.comics
 
-import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 import me.emmano.state.BaseViewModel
 import me.emmano.state.ViewStateProvider
 
 class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
-    BaseViewModel<State>(viewStateProvider) {
+    BaseViewModel<ComicsViewModel.State>(viewStateProvider) {
 
     override val errors = { t: Throwable ->
         ShowError
-    }
-
-    val comics by observe {
-        it.comics
-    }
-    val loading by observe {
-        it.loading
     }
 
     fun loadComics() {
@@ -30,4 +22,3 @@ class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
     )
 
 }
-

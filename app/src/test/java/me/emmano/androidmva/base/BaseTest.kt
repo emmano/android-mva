@@ -3,7 +3,6 @@ package me.emmano.androidmva.base
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.validateMockitoUsage
 import me.emmano.androidmva.CoroutineTest
-import me.emmano.androidmva.comics.repo.ComicRepository
 import me.emmano.androidmva.rule.CoroutineTestRule
 import org.junit.After
 import org.junit.Before

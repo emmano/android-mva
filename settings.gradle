@@ -1,3 +1,4 @@
 include ':app', ':marvelapi', ':adapt', ':patch'
 include ':state'
 include ':databinding-cleaner'
+include ':common'
