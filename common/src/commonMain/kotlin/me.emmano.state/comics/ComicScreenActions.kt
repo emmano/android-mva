@@ -10,11 +10,11 @@ object Loading : SyncStoreAction<ComicsViewModel.State> {
 class LoadComics :
     AsyncStoreAction<ComicsViewModel.State> {
 
-//    private val comicRepository by inject<ComicRepository>()
+    private val comicRepository  = ComicsRepository(engine)
 
     override suspend fun fire(currentState: ComicsViewModel.State): (ComicsViewModel.State) -> ComicsViewModel.State {
-//        val comics = comicRepository.comics().orEmpty()
-        return {state: ComicsViewModel.State -> state.copy(listOf(ComicModel("HEY", "DESC", "")), false, false)}
+        val comics = comicRepository.getComics()
+        return {state: ComicsViewModel.State -> state.copy(comics, false, false)}
     }
 }
 

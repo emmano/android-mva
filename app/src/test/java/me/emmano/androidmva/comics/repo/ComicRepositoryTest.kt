@@ -1,9 +1,9 @@
 package me.emmano.androidmva.comics.repo
 
-import com.marvel.api.Comic
-import com.marvel.api.ComicDataContainer
-import com.marvel.api.ComicDataWrapper
-import com.marvel.api.Image
+import me.emmano.state.comics.api.Comic
+import me.emmano.state.comics.api.ComicDataContainer
+import me.emmano.state.comics.api.ComicDataWrapper
+import me.emmano.state.comics.api.Image
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import me.emmano.androidmva.CoroutineTest
