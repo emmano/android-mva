@@ -1,0 +1,16 @@
+PODS:
+  - common (1.0.0)
+
+DEPENDENCIES:
+  - common (from `/Users/ortiguee/Android/android-mva/common`)
+
+EXTERNAL SOURCES:
+  common:
+    :path: "/Users/ortiguee/Android/android-mva/common"
+
+SPEC CHECKSUMS:
+  common: de65673313049e13369a3473e20f1336c700f535
+
+PODFILE CHECKSUM: c0a61faff643fdd95a9d64dc8404ead837752d37
+
+COCOAPODS: 1.9.1

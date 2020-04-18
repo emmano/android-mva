@@ -6,7 +6,7 @@ abstract class BaseViewModel<S>(private val viewStateProvider: ViewStateProvider
 
     val combinedState by lazy {
         viewStateProvider.error(errors)
-        viewStateProvider.combinedState
+        viewStateProvider.combinedState.wrap()
     }
 
     fun action(action: StoreAction<S>) {

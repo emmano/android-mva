@@ -26,7 +26,7 @@ class ComicsRepository(clientEngine: HttpClientEngine) {
     }
 
     suspend fun getComics(): List<ComicModel> =
-        client.get<ComicDataWrapper>("https://gateway.marvel.com/v1/public/comics?limit=40&format=comic&formatType=comic&noVariants=true&dateDescriptor=thisMonth&ts=1&apikey=9d40db1630da003c1fb826d96bef65eb&hash=b167f09767dfce350bc36a144429c1b5")
+        client.get<ComicDataWrapper>("https://gateway.marvel.com/v1/public/comics?limit=40&format=comic&formatType=comic&noVariants=true&ts=1&apikey=9d40db1630da003c1fb826d96bef65eb&hash=b167f09767dfce350bc36a144429c1b5")
             .toComicModels()
 
     private fun ComicDataWrapper.toComicModels(): List<ComicModel> =
