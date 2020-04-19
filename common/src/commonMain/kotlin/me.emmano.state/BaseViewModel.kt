@@ -9,7 +9,7 @@ abstract class BaseViewModel<S>(private val viewStateProvider: ViewStateProvider
         viewStateProvider.combinedState.wrap()
     }
 
-    fun action(action: StoreAction<S>) {
+    fun action(action: Action<S>) {
         scope.launch {
             viewStateProvider.dispatch(action)
         }

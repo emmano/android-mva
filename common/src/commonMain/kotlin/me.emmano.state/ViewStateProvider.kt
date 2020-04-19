@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.*
 @ExperimentalCoroutinesApi
 class ViewStateProvider<S>(private val initialState: S) {
 
-    private val asyncActions by lazy { ConflatedBroadcastChannel<AsyncStoreAction<S>>() }
-    private val syncActions by lazy { ConflatedBroadcastChannel<SyncStoreAction<S>>() }
+    private val asyncActions by lazy { ConflatedBroadcastChannel<AsyncAction<S>>() }
+    private val syncActions by lazy { ConflatedBroadcastChannel<SyncAction<S>>() }
 
     private val state by lazy { ConflatedBroadcastChannel(initialState) }
 
@@ -50,10 +50,10 @@ class ViewStateProvider<S>(private val initialState: S) {
                 it }
     }
 
-    suspend fun dispatch(action: StoreAction<S>) {
+    suspend fun dispatch(action: Action<S>) {
         when (action) {
-            is AsyncStoreAction -> asyncActions.send(action)
-            is SyncStoreAction -> syncActions.send(action)
+            is AsyncAction -> asyncActions.send(action)
+            is SyncAction -> syncActions.send(action)
         }
     }
 

@@ -29,10 +29,10 @@ kotlin {
     }
 
     val iOSTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget =
-    if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true)
-    ::iosArm64
-    else
-    ::iosX64
+        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true)
+            ::iosArm64
+        else
+            ::iosX64
 
     iOSTarget("ios") {
         compilations {
@@ -55,6 +55,12 @@ kotlin {
         implementation("io.ktor:ktor-client-logging:$ktorVersion")
     }
 
+    sourceSets["commonTest"].dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-test-common:1.3.72")
+        implementation("org.jetbrains.kotlin:kotlin-test-annotations-common:1.3.72")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
+    }
+
     sourceSets["iosMain"].dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$coroutinesVersion")
@@ -64,6 +70,16 @@ kotlin {
 //        implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
         implementation("io.ktor:ktor-client-logging-native:$ktorVersion")
 
+    }
+
+    sourceSets["iosTest"].dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-test:1.3.72")
+    }
+
+    sourceSets["androidTest"].dependencies {
+        implementation("junit:junit:4.13")
+        implementation("org.jetbrains.kotlin:kotlin-test-junit:1.3.72")
+        implementation("org.jetbrains.kotlin:kotlin-test:1.3.72")
     }
 
 }

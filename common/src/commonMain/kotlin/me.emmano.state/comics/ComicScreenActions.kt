@@ -1,14 +1,14 @@
 package me.emmano.state.comics
 
-import me.emmano.state.AsyncStoreAction
-import me.emmano.state.SyncStoreAction
+import me.emmano.state.AsyncAction
+import me.emmano.state.SyncAction
 
-object Loading : SyncStoreAction<ComicsViewModel.State> {
+object Loading : SyncAction<ComicsViewModel.State> {
     override fun fire() = { state: ComicsViewModel.State -> state.copy(loading = true, showError = false) }
 }
 
 class LoadComics :
-    AsyncStoreAction<ComicsViewModel.State> {
+    AsyncAction<ComicsViewModel.State> {
 
     private val comicRepository  = ComicsRepository(engine)
 
