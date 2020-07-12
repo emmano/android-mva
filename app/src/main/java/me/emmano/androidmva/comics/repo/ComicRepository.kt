@@ -4,8 +4,9 @@ import com.marvel.api.ComicDataWrapper
 import me.emmano.androidmva.comics.api.MarvelService
 import me.emmano.androidmva.comics.mvvm.ComicModel
 import me.emmano.androidmva.comics.mvvm.LoadingComicsException
+import javax.inject.Inject
 
-class ComicRepository(private val marvelService: MarvelService) {
+class ComicRepository @Inject constructor(private val marvelService: MarvelService) {
 
     @Throws(LoadingComicsException::class)
     suspend fun comics(): List<ComicModel>? = marvelService.comics().toComicModels()

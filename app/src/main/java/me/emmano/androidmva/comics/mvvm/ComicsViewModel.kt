@@ -3,8 +3,9 @@ package me.emmano.androidmva.comics.mvvm
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 import me.emmano.state.BaseViewModel
 import me.emmano.state.ViewStateProvider
+import javax.inject.Inject
 
-class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
+class ComicsViewModel @Inject constructor(viewStateProvider: ViewStateProvider<State>, private val loadComics: LoadComics) :
     BaseViewModel<State>(viewStateProvider) {
 
     override val errors = { t: Throwable ->
@@ -20,7 +21,7 @@ class ComicsViewModel(viewStateProvider: ViewStateProvider<State>) :
 
     fun loadComics() {
         action(Loading)
-        action(LoadComics())
+        action(loadComics)
     }
 
     data class State(
