@@ -20,11 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.koin.core.inject
 
-@ExperimentalCoroutinesApi
-class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
-
-    @get:Rule
-    override val coroutineRule: CoroutineTestRule = CoroutineTestRule()
+class ComicsFragmentTest : RobolectricTest() {
 
     private val viewModel: ComicsViewModel by inject()
     private val comicsData = MutableLiveData<List<ComicModel>>()
@@ -35,7 +31,7 @@ class ComicsFragmentTest : RobolectricTest(), CoroutineTest {
     }
 
     @Test
-    fun `load and display comics`() = test {
+    fun `load and display comics`()  {
         val comicCell = ComicModel("title", "description", "imageUrl")
         launchFragmentInContainer<ComicsFragment>()
 

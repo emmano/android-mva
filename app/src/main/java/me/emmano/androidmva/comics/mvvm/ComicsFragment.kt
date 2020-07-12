@@ -46,8 +46,4 @@ class ComicsFragment : Fragment() {
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
 }
