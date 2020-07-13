@@ -8,7 +8,6 @@ import javax.inject.Inject
 object Loading : SyncStoreAction<ComicsViewModel.State> {
     override fun fire() = { state: ComicsViewModel.State -> state.copy(loading = true, showError = false) }
 }
-
 class LoadComics @Inject constructor(private val comicRepository: ComicRepository) :
     AsyncStoreAction<ComicsViewModel.State> {
 

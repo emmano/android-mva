@@ -1,10 +1,12 @@
 package me.emmano.androidmva.comics.mvvm
 
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel.State
 import me.emmano.state.BaseViewModel
 import me.emmano.state.ViewStateProvider
 import javax.inject.Inject
 
+@ActivityRetainedScoped
 class ComicsViewModel @Inject constructor(viewStateProvider: ViewStateProvider<State>, private val loadComics: LoadComics) :
     BaseViewModel<State>(viewStateProvider) {
 

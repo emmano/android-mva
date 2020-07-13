@@ -3,20 +3,14 @@ package me.emmano.androidmva.comics
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.Dispatchers
 import me.emmano.androidmva.BuildConfig
 import me.emmano.androidmva.comics.api.MarvelService
 import me.emmano.androidmva.comics.mvvm.ComicsViewModel
-import me.emmano.androidmva.comics.mvvm.LoadComics
-import me.emmano.androidmva.comics.repo.ComicRepository
 import me.emmano.state.ViewStateProvider
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.viewmodel.dsl.viewModel
-import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
@@ -35,18 +29,6 @@ object ComicsModule {
     fun providesComicsViewStateProvider(): ViewStateProvider<ComicsViewModel.State> =
         ViewStateProvider(ComicsViewModel.State(), Dispatchers.IO)
 
-}
-
-@Module
-@InstallIn(ActivityRetainedComponent::class)
-object ComicsViewModelModule {
-
-    @ActivityRetainedScoped
-    @Provides
-    fun providesComicsViewModel(
-        viewStateProvider: ViewStateProvider<ComicsViewModel.State>,
-        loadComics: LoadComics
-    ): ComicsViewModel = ComicsViewModel(viewStateProvider, loadComics)
 }
 
 @Module
