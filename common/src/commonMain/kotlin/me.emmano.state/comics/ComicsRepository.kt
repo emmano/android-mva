@@ -10,14 +10,13 @@ import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
 import io.ktor.client.request.get
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import me.emmano.state.comics.api.ComicDataWrapper
 
 class ComicsRepository(clientEngine: HttpClientEngine) {
     private val client = HttpClient(clientEngine)
     {
         install(JsonFeature) {
-            serializer = KotlinxSerializer(Json(JsonConfiguration(ignoreUnknownKeys = true)))
+            serializer = KotlinxSerializer(Json{ignoreUnknownKeys = true})
         }
         install(Logging) {
             level = LogLevel.ALL
